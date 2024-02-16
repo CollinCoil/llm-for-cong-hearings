@@ -1,7 +1,7 @@
 '''
 The following code was adapted from https://github.com/allenai/s2-folks/blob/main/examples/python/search_bulk/get_dataset.py
 The goal is to output a json file containing the titles and abstracts of papers related to federal health insurance. This code retrieves information on 96396 papers. 
-The abstracts in this json file will be integral to extend the pretraining of the sentence transformer mdoel. 
+The abstracts in this json file will be integral to extend the pretraining of the sentence transformer model. 
 '''
 
 import requests
