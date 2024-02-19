@@ -15,7 +15,7 @@ import re
             # Paragraphs with similar topics will be used to make pairs of similar paragraphs, paragraphs with different topics will be used to make pairs of different topics
 
 
-def generate_pretraining_corpus(data_path:str, output_path:str):
+def generate_pretraining_corpus(data_path:str):
     abstracts = list()
     with open(data_path, "r") as jsonfile:
         for line in jsonfile:
@@ -47,4 +47,4 @@ def generate_finetuning_corpus(data_path:str, output_path:str):
 
 
 
-generate_pretraining_corpus("Data/papers.jsonl", "Data/abstracts.csv")
+generate_pretraining_corpus("Data/papers.jsonl")

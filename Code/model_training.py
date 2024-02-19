@@ -23,7 +23,7 @@ def pretrain_model(model, data):
     train_dataset = datasets.DenoisingAutoEncoderDataset(data)
 
     # DataLoader to batch your data
-    train_dataloader = DataLoader(train_dataset, batch_size=8, shuffle=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=4)
 
     # Use the denoising auto-encoder loss
     train_loss = losses.DenoisingAutoEncoderLoss(
