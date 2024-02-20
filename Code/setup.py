@@ -1,2 +1,3 @@
 # sentence transformers, numpy, re, json
-# nltk
+# nltk, keybert
+# Microsoft Visual C++ Redistributable, not a package to download
