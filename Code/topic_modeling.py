@@ -1,3 +1,12 @@
+'''
+This file contains code used for extended extracting the topics of the corpus. It does this through two different techniques: (1) KeyBERT and (2) Latent Dirichlet Allocation (LDA).
+Keybert is a more modern, sophisticated tool, and LDA is a classic tool for topic modeling. This python file takes the json file containing the corpus and returns
+the keywords for each file. You can choose to use both KeyBERT and LDA or either one. The output is a csv file with the keywords that align with the indices of each document in 
+the corpus. 
+
+'''
+
+
 from keybert import KeyBERT
 import numpy as np
 import string
@@ -82,5 +91,5 @@ def save_keywords(keywords, file_path_name):
     np.savetxt(file_path_name, keywords, delimiter=",")
 
 
-keywords = generate_keywords("Data/corpus", 5, 5) # TODO: Add this numpy array with the corpus here
+keywords = generate_keywords("Data/file_path.npy", 5, 5) # TODO: Add this numpy array or json file with the corpus here
 save_keywords(keywords, "Data/corpus_keywords.csv")
