@@ -2,7 +2,8 @@
 This file contains code used for extracting relevant floor speeches from the legislative record. The raw data for these can be found at 
 https://data.stanford.edu/congress_text which is a Stanford University project that processes text from the US Congressional Record. 
 I used the daily edition of HeinOnline to get floor speeches from the 110th-114th Congresses. That data is not perfectly delimited by the
-| symbol, so some work may need to be done to correct these errors. 
+| symbol, so some work may need to be done to correct these errors. This file outputs a json lines file that will be used in several 
+other programs, including generate_embeddings.py, topic_modeling.py, and witness_search.py. 
 
 '''
 
