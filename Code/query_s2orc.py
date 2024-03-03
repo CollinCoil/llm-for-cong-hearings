@@ -8,7 +8,7 @@ import requests
 import json
 
 
-def main():
+def query_s2orc():
     query = 'Obamacare | (Affordable Care Act) | PPACA | Medicare | Medicaid | (CHIP + Obama) | (ACA + Obama) | (marketplace + health + insurance) | (Skinny Repeal) | (Trump + Health + Insurance) | (Obama + Health + Insurance)'
     fields = 'title,publicationTypes,publicationDate,abstract'
     
@@ -31,4 +31,4 @@ def main():
     
     print(f"Done! Retrieved {retrieved} papers total")
 
-main()
+query_s2orc()
