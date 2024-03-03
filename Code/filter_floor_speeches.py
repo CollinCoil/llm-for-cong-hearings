@@ -38,10 +38,20 @@ def filter_speeches(Congress: str):
 
 
 # TODO: Fill out this function to save the speeches in a json file with some metadata (date, speaker)
-def save_speeches():
-    pass
+def save_speeches(speeches, Congress: str, output_file_name: str):
+    description_path = "Data/descr_%s.txt" % Congress
+    descriptions = pd.read_csv(description_path, sep='|', header=0)
+    
+    # Inner join the speeches and descriptions
+    merged_speeches_descr = pd.merge(speeches, descriptions, on="speech_id", how="inner")
+
+    # Convert the merged file to json
+    merged_speeches_descr.to_json(output_file_name, orient = "records", lines=True)
+
 
 congresses = ["110", "111", "112", "113", "114"]
 
 for term in congresses: 
-    filter_speeches(term)
+    cong_speeches = filter_speeches(term)
+    output_file_name = "Data/relevant_speeches_%s.jsonl" % term
+    save_speeches(cong_speeches, term, output_file_name)
