@@ -18,6 +18,7 @@ from nltk.corpus import stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 from gensim import corpora
 from gensim.models import LdaModel
+from sentence_transformers import SentenceTransformer
 
 stop = set(stopwords.words('english'))
 exclude = set(string.punctuation)
@@ -26,7 +27,7 @@ lemma = WordNetLemmatizer()
 # Code to extract keywords using KeyBert
 def keybert_keywords(document_list, n_keywords):
     kw_model = KeyBERT()
-    keybert_results = kw_model.extract_keywords(document_list, keyphrase_ngram_range = (1,2), stop_words = "english",
+    keybert_results = kw_model.extract_keywords(document_list, keyphrase_ngram_range = (1,1), stop_words = "english",
                                          top_n = n_keywords, diversity = 0.5, use_mmr=True)
     keywords = list()
     for document in keybert_results:
@@ -47,13 +48,13 @@ def clean(doc):
     normalized = " ".join(lemma.lemmatize(word) for word in punc_free.split())
     return normalized
 
-def create_lda_inputs(document_list):
+def create_lda_inputs(document_list: list):
     clean_documents = [clean(doc).split() for doc in document_list]
     dictionary = corpora.dictionary.Dictionary(clean_documents)
     doc_term_matrix = [dictionary.doc2bow(doc) for doc in clean_documents]
     return dictionary, doc_term_matrix
 
-def lda_keywords(document_list, n_keywords):
+def lda_keywords(document_list: list, n_keywords: int):
     dictionary, document_term_matrix = create_lda_inputs(document_list)
     lda_model = LdaModel(document_term_matrix, id2word = dictionary, num_topics = n_keywords, random_state = 2024)
     keywords = list()
@@ -70,8 +71,8 @@ def lda_keywords(document_list, n_keywords):
     return keywords
 
 
-# Function to easily generate keywords using both Keybert and LDA
-def generate_keywords(document_list, n_keybert=1, n_lda=1):
+# Wrapper function to easily generate keywords using both Keybert and LDA
+def generate_keywords(document_list:list, n_keybert:list = 1, n_lda:list = 1):
     if n_keybert == 0 and n_lda == 0:
         raise ValueError("At least one of n_keybert and n_lda needs to be greater than 0.")
     if n_keybert > 0:
