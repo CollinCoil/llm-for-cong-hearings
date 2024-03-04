@@ -59,7 +59,7 @@ congresses = ["110", "111", "112", "113", "114"]
 
 for term in congresses: 
     text, ids = read_jsonl("Data/relevant_speeches_%s.jsonl" % term) # Replace this read_jsonl function call with something to open other data type if necessary
-    keywords = keybert_keywords(text, 3, 3)
+    keywords = keybert_keywords(text, 10)
     keywords_with_id = add_ids_to_keywords(ids, keywords)
     output_file_name = "Data/congressional_speech_%s_keywords.csv" % term
     save_keywords(keywords_with_id, output_file_name)
