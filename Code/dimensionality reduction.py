@@ -14,5 +14,5 @@ def create_umap_embeddings(dataframe):
         metric="minkowski"
     )
     umap_embedding = mapping.fit_transform(dataframe)
-    return tsne_embeddings
+    return umap_embedding
 
