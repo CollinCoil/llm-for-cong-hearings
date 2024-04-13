@@ -3,7 +3,7 @@ import numpy as np
 from umap import UMAP
 
 def create_tsne_embeddings(dataframe, perplexity = 50):
-    tsne_embeddings = TSNE(n_componsnts = 2, perplexity = perplexity).fit_transform(dataframe)
+    tsne_embeddings = TSNE(n_components = 2, perplexity = perplexity).fit_transform(dataframe)
     return tsne_embeddings
 
 def create_umap_embeddings(dataframe):
