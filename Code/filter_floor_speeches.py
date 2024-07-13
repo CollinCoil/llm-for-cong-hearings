@@ -38,7 +38,6 @@ def filter_speeches(Congress: str):
 
 
 
-# TODO: Fill out this function to save the speeches in a json file with some metadata (date, speaker)
 def save_speeches(speeches, Congress: str, output_file_name: str):
     description_path = "Data/descr_%s.txt" % Congress
     descriptions = pd.read_csv(description_path, sep='|', header=0)

@@ -14,7 +14,7 @@ import os
 
 
 # Code to extract keywords using KeyBert
-def keybert_keywords(document_list, n_keywords):
+def keybert_keywords(document_list, n_keywords:int):
     kw_model = KeyBERT()
     keybert_results = kw_model.extract_keywords(document_list, keyphrase_ngram_range = (1,2), stop_words = "english",
                                          top_n = n_keywords, diversity = 0.5, use_mmr=True)
@@ -32,7 +32,7 @@ def save_keywords(keywords, file_path_name, encoding = None):
     np.savetxt(file_path_name, keywords, delimiter=",", fmt="%s", encoding = encoding)
 
 # Function to read in json lines file if that is data format
-def read_jsonl(file_path_name):
+def read_jsonl(file_path_name:str):
     texts = list()
     ids = list()
     with open(file_path_name, "r") as jsonfile:
@@ -48,7 +48,7 @@ def read_jsonl(file_path_name):
     return text_array, ids
 
 # Function to read text files from directory
-def read_directory(directory):
+def read_directory(directory:str):
     texts = list()
     file_names = list()
     for filename in os.listdir(directory):
@@ -72,7 +72,7 @@ def add_ids_to_keywords(ids, keywords):
     return keywords_with_id
 
 
-def main(text_type):
+def get_topics(text_type:str):
     if text_type == "floor speech":
         # Extracting keywords from congressional speeches
         congresses = ["110", "111", "112", "113", "114" ]    
@@ -93,4 +93,4 @@ def main(text_type):
         save_keywords(keywords_with_names, output_file_name, encoding = "utf-8")
 
 
-main("witness testimony")
+get_topics("witness testimony")
