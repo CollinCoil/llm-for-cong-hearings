@@ -36,7 +36,8 @@ def generate_pretraining_corpus(data_path:str):
 
 
 
-
+# Look into using billsum dataset: https://huggingface.co/datasets/FiscalNote/billsum/viewer/default/train
+# This can be an additional source for fine tuning because it includes text from bills. 
 
 def generate_finetuning_corpus(data_path:str, output_path:str):
     pass
