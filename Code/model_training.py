@@ -17,13 +17,13 @@ nltk.download('punkt')
 # See https://www.sbert.net/examples/unsupervised_learning/TSDAE/README.html
 
 def pretrain_model(model, data):
-    model_name = "roberta"
+    model_name = "pretrained_roberta"
 
     # Create the special denoising dataset that adds noise on-the-fly
     train_dataset = datasets.DenoisingAutoEncoderDataset(data)
 
     # DataLoader to batch your data
-    train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=4)
+    train_dataloader = DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=16)
 
     # Use the denoising auto-encoder loss
     train_loss = losses.DenoisingAutoEncoderLoss(
@@ -35,12 +35,15 @@ def pretrain_model(model, data):
         train_objectives=[(train_dataloader, train_loss)],
         epochs=10,
         weight_decay=0,
-        scheduler="constantlr",
+        scheduler="warmuplinear",
         optimizer_params={"lr": 3e-5},
         show_progress_bar=True,
+        save_best_model=True,
+        output_path="pretrained_roberta"
     )
 
-    model.save("Models/pretrained_model")
+    model.save("Models/pretrained_roberta")
+
 
 
 
