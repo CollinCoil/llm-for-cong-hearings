@@ -1,10 +1,36 @@
-# TODO: Accept files of embeddings and do the semantic similarity search (SSS)
-# TODO: Accept files contianing the dates to filter out the SSS
-# TODO: Output 
-    # (1) 20 most similar paragraphs from the LHIC
-    # (2) 2-3 most similar paragraphs from each of the 3 branches in the LHIC
-    # (3) Average of those 20 most similar sentence simiarlities - Witness Impact Metric (WIM)
-    # (4) Average of the 2-3 most similar paragraphs from each of the 3 branches - Which branch each witness impacts most
-        # This information will allow us to see the differences of impact by occupation (agency officials are expected to be most similar to executive)
-    # (4) Date of the witness testimony
-        # This will allow us to trach WIM development over time
+"""
+This function calculates the cosine similarity between all embeddings in the witness corpus and the LHIC. It does this
+by calculating the cosine similarity between each sentence. The output of this function is a similarity matrix where the 
+rows correspond with a sentence from the witness corpus and the columns correspond with a sentence from the LHIC. 
+This semantic similarity matrix can then be sorted by witness to determine which sentences they said are most similar to 
+sentences in the LHIC. 
+"""
+
+import numpy as np
+from scipy.spatial.distance import cdist
+
+
+def semantic_similarity(witness_embeddings_path="Data/witness_embeddings.npy", lhic_embeddings_path="Data/lhic_embeddings.npy", output_path="Data/similarity_matrix.npy"):
+  """
+  Calculates cosine similarity between sentence embeddings in two NumPy files.
+
+  Args:
+    witness_embeddings_path: Path to the first NumPy file containing sentence embeddings (default: "witness_embeddings.npy").
+    lhic_embeddings_path: Path to the second NumPy file containing sentence embeddings (default: "lhic_embeddings.npy").
+    output_path: Path to save the cosine similarity matrix as a NumPy array (default: "similarity_matrix.npy").
+  """
+
+  # Load the sentence embeddings
+  witness_embeddings = np.load(witness_embeddings_path)
+  lhic_embeddings = np.load(lhic_embeddings_path)
+
+  # Calculate cosine similarity matrix using efficient distance function
+  similarity_matrix = 1 - cdist(witness_embeddings, lhic_embeddings, metric='cosine')
+
+  # Save the similarity matrix
+  np.save(output_path, similarity_matrix)
+
+  print(f"Similarity matrix saved to: {output_path}")
+
+# Example usage
+semantic_similarity()

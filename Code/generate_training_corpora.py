@@ -38,7 +38,7 @@ def generate_pretraining_corpus(data_path:str):
 
 # This code creates a fine-tuning corpus based on the text files in a directory. These text files were prepared in the same manner as those of the WLHIC, but 
 # they are not being used to search for witness testimony impact. Furthermore, we use the BillSum dataset to augment our fine tuning corpus with additional legislative text. 
-def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:int = 50000):
+def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:int = 500000):
   """
   Generates a fine-tuning corpus for sentence transformers.
 
