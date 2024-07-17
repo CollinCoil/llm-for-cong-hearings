@@ -1,5 +1,6 @@
 """
-This function accepts a corpus of text and calculates a text embedding for each sentence. 
+This function accepts a corpus of text and calculates a text embedding for each sentence. It accepts json lines files created by process_text.py and outputs embedding numpy arrays
+for use in semantic_similarity.py. 
 """
 
 
@@ -8,6 +9,15 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 
 def generate_embeddings(model:str, corpus_file:str, output_file:str):
+    """
+    This function uses a sentence transformed model that is fine tuned for semantic textual similarity to calculate a text embedding for each sentence. These
+    embeddings capture semantic and syntactic content of the sentence. Similar sentences will have embeddings close to each other in embedding space. 
+
+    Args: 
+        model: a string of the directory where the model is stored
+        corpus_file: a string of the json lines file location containing the text for embeddings
+        output_file: a string of the file name and location that the output embeddings should be written
+    """
     # Load the fine-tuned model
     model = SentenceTransformer('Models/finetuned_model')
 

@@ -1,9 +1,8 @@
-'''
+"""
 This file contains code used for extended pre-training of a sentence transformers model. 
 It needs a pretrained model (which can be found on https://www.sbert.net/docs/pretrained_models.html#sentence-embedding-models)
 and the pretraining corporus generated from using the generate_trainig_corpora.py file. 
-
-'''
+"""
 
 from sentence_transformers import SentenceTransformer
 from sentence_transformers import datasets,  losses
@@ -15,7 +14,16 @@ nltk.download('punkt')
 # The following code continues pretraining of a pretrained model with TSDAE, 
 # See https://www.sbert.net/examples/unsupervised_learning/TSDAE/README.html
 
-def pretrain_model(model, data):
+def pretrain_model(model: str, data):
+    """
+    This takes a pretrained sentence transformer model and a pretraining dataset to extend pretraining of the model. This is done to further expose the model to 
+    the unqiue vocabulary in the primary data set. In our project, we use abstracts on articles about Congress and the Affordable Care Act to increase the model's awareness
+    of words associated with the Affordable Care act. The model is saved once the extended pretraining is complete. 
+
+    Args: 
+        model: a string of the directory where the model is stored
+        data: the fine-tuning data set
+    """
     model_name = "pretrained_roberta"
 
     # Create the special denoising dataset that adds noise on-the-fly

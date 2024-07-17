@@ -8,8 +8,13 @@ import os
 
 d = enchant.Dict("en_US")
 
-def remove_spaces(text):
-    """Removes spaces within words while preserving spaces between words."""
+def remove_spaces(text: str):
+    """
+    Removes spaces within words while preserving spaces between words.
+
+    Args: 
+        text: the contents of a text file from which spaces are to be removed. 
+    """
 
     fixed_text = []
     current_word = ""  # Store a word being constructed
@@ -35,7 +40,13 @@ def remove_spaces(text):
 
 
 # Def function to loop through files in directory
-def clean_spaces_from_files_in_directory(directory):
+def clean_spaces_from_files_in_directory(directory: str):
+    """
+    A helper function to call remove_spaces on an entire directory of text files. 
+
+    Args: 
+        directory: a string for the directory containing the text files. 
+    """
     for filename in os.listdir(directory):
         filename = directory + filename
         with open(filename, 'r', encoding='utf-8') as file:

@@ -21,12 +21,14 @@ def witness_search(witness_list:list, sentences_file:str, output_file:str="Data/
     for witness in witness_list:
       # Split witness name by spaces for individual word search
       witness_parts = witness.split()
+      
       for line in f:
         data = json.loads(line)
         document = data['document']
         text = data['text']
         # Search for each part of the witness name using regular expression
         match = any(re.search(part, text, re.IGNORECASE) for part in witness_parts)
+        
         if match:
           # If any part is found, write witness, document, and sentence to output
           output_line = {"witness": witness, "document": document, "text": text}

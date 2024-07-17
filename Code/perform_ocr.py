@@ -1,21 +1,24 @@
-'''
+"""
 This program is designed to extract text from a specified range of pages in a PDF file, enhancing image contrast and performing OCR on images.
 This is to be used for non-digital-native PDFs, or documents that have been scanned into PDF format. These documents (or parts of documents)
 can be identified text cannot be highlighted. It loops over the selected pages of an input file, extracts the images the text is stored in, 
 and performs optical character recognition (OCR) to extract the text. 
-'''
+"""
 
 import fitz
 from PIL import Image, ImageEnhance
 import pytesseract
 import io
 
-def extract_text_from_pdf(pdf_file, lower_page, upper_page, output_text_file="extracted_text.txt"):
+def extract_text_from_pdf(pdf_file: str, lower_page: int, upper_page: int, output_text_file: str="extracted_text.txt"):
     """
-    param pdf_file: The path to the PDF file.
-    param lower_page: The starting page (1-based index).
-    param upper_page: The ending page (1-based index, inclusive).
-    param output_text_file: The path to the output text file.
+    This code extracts text from PDF documents that have not have had OCR performed. 
+
+    Args: 
+        pdf_file: The path to the PDF file.
+        lower_page: The starting page (1-based index).
+        upper_page: The ending page (1-based index, inclusive).
+        output_text_file: The path to the output text file.
     """
     # Open the PDF file
     doc = fitz.open(pdf_file)

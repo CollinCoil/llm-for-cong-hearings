@@ -1,9 +1,8 @@
-'''
+"""
 This file contains code used for fine tuning of a pre-trained sentence transformers model. 
 It needs a pretrained model (which is the output of pretrain_model.py)
 fine tuning corpora generated from using the generate_trainig_corpora.py file. 
-
-'''
+"""
 
 from sentence_transformers import SentenceTransformer, InputExample
 from sentence_transformers import losses
@@ -15,6 +14,14 @@ nltk.download('punkt')
 
 
 def fine_tune_model(model:str, data):
+    """
+    This takes a pretrained sentence transformer model and a fine-tuning dataset to fine tune the model. It uses the triplet loss function, so training data must be set up as 
+    (anchor sentence, similar sentence, dissimilar sentence). Once the model is fine tuned, it is saved. 
+
+    Args: 
+        model: a string of the directory where the model is stored
+        data: the fine-tuning data set
+    """
     # Load the pre-trained model
     model = SentenceTransformer(model)
 
@@ -27,7 +34,7 @@ def fine_tune_model(model:str, data):
         examples.append(InputExample(texts=[anchor, positive, negative], label=0.0))
 
     # Create a DataLoader for the examples
-    train_dataloader = DataLoader(examples, shuffle=True, batch_size=16)
+    train_dataloader = DataLoader(examples, shuffle=True, batch_size=16, num_workers=16)
 
     # Define the loss function
     loss_function = losses.TripletLoss(model=model)

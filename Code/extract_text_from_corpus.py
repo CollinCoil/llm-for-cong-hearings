@@ -1,9 +1,9 @@
-'''
+"""
 This program allows users to extract text from pdf files. There are some issues - this extraction program cannot work with non-OCR documents. It 
 also extracts unnecessary text such as footnotes, charts, and headers. Manual cleaning may be necessary. The 
 extract_from_files_in_directory program takes the directory where the pdf files are stored and extracts text. Note: Only pdf files can be in that 
 directory for the program to run without error. 
-'''
+"""
 
 from typing import Union
 from os.path import exists
@@ -15,6 +15,15 @@ import re
 
 def text_extraction(pdf_name: str, pages: Union[int, list] = None, 
                      file_base_name: str = "text"):
+  """
+  Extracts text from PDF files. This text must be in a digitally native PDF or PDF that has had OCR performed. 
+
+  Args: 
+    pdf_name: file name from which text should be extracted
+    pages: page number or list of pages from which text should be removed. 
+    file_base_name: name for the output txt file
+  """
+  
   # Checks if pdf file is in directory, downloads if not in directory
   reader = PdfReader(pdf_name)
  
@@ -50,7 +59,13 @@ def text_extraction(pdf_name: str, pages: Union[int, list] = None,
 
 
 # Def function to loop through files in directory
-def extract_from_files_in_directory(directory):
+def extract_from_files_in_directory(directory: str):
+    """
+    A helper function to apply text_extraction to all text files in a directory. 
+
+    Args: 
+      directory: the path of the directory containing the PDF files. 
+    """
     for filename in os.listdir(directory):
       filename = "Data/Testimonies/" + filename
       output_name = re.sub(".pdf", ".txt", filename)
