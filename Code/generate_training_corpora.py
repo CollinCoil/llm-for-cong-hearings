@@ -4,32 +4,28 @@ The goal is to generate two corpora and output csv files that will be used in mo
 import json
 import numpy as np
 import os
-from random import sample, choice
+from random import choice
 import re
+from nltk.tokenize import sent_tokenize, word_tokenize
 
 # This code accepts two inputs:
 #     (1) the json file created by the query_s2orc.py file, and 
 #     (2) the json file containing text extracted from the LHIC that will not be searched for comparison with witness statements. 
 def generate_pretraining_corpus(data_path:str):
-    abstracts = list()
-    with open(data_path, "r") as jsonfile:
-        for line in jsonfile:
-            data = json.loads(line)
-            abstract = data.get("abstract")
-            
-            if abstract is not None:
-                line_skip = "\n"
-                abstract = re.sub(line_skip, " ", abstract)
-                abstract = abstract.strip()
-                abstracts.append(abstract)
+  abstracts = list()
+  with open(data_path, "r") as jsonfile:
+    for line in jsonfile:
+      data = json.loads(line)
+      abstract = data.get("abstract")
+        
+      if abstract is not None:
+        line_skip = "\n"
+        abstract = re.sub(line_skip, " ", abstract)
+        abstract = abstract.strip()
+        abstracts.append(abstract)
 
-    abstract_array = np.array(abstracts)
-    np.save("Data/abstracts.npy", abstract_array)
-
-
-#############################################################################################
-# Will need to clean up following code for bugs
-#############################################################################################
+  abstract_array = np.array(abstracts)
+  np.save("Data/abstracts.npy", abstract_array)
 
 
 
@@ -48,73 +44,46 @@ def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:
       corpus_size: Number of triplets (anchor, positive, negative) to generate.
   """
 
-  # Initialize empty lists to store sentences and document information
+  # Initialize an empty list to hold all sentences
   sentences = []
-  documents = {}
-  current_doc = []
 
-  # Loop through all files in the directory
-  for filename in os.listdir(directory_path):
-    file_path = os.path.join(directory_path, filename)
-    if os.path.isfile(file_path):
-      # Open file, read content, and split into sentences
-      with open(file_path, 'r') as f:
-        for line in f:
-          sentences.extend(line.strip().split('.'))
-          current_doc.extend(line.strip().split('.'))
-      documents[filename] = current_doc
-      current_doc = []  # Reset document list for next file
-
-  # Filter out sentences less than or equal to 5 words
-  filtered_sentences = [s for s in sentences if len(s.split()) > 5]
-
-  # Initialize empty numpy array for triplets
+  # Walk through all files in the directory
+  for root, dirs, files in os.walk(directory_path):
+      for file in files:
+          if file.endswith(".txt"):
+              # Open the file and read its content
+              with open(os.path.join(root, file), 'r') as f:
+                  text = f.read()
+                  # Tokenize the text into sentences
+                  sents = sent_tokenize(text)
+                  # Filter out sentences that are too short
+                  sents = [sent for sent in sents if len(word_tokenize(sent)) > 5]
+                  # Add the sentences to the list, keeping track of their origin
+                  sentences.extend([(sent, file) for sent in sents])
+  
+  # Initialize the numpy array to hold the triplets
   triplets = np.empty((corpus_size, 3), dtype=object)
-
-  # Loop until we have the desired number of triplets
+  
+  # Generate the triplets
   for i in range(corpus_size):
-    # Choose a random anchor sentence
-    anchor_idx = sample(range(len(filtered_sentences)), 1)[0]
-    anchor_sentence = filtered_sentences[anchor_idx]
-    anchor_doc = [k for k, v in documents.items() if anchor_sentence in v][0]
-
-    # Choose a positive sentence (adjacent from same document)
-    positive_options = [
-        idx for idx, sentence in enumerate(filtered_sentences)
-        if sentence != anchor_sentence and (idx == anchor_idx - 1 or idx == anchor_idx + 1)
-        and documents[filename_from_idx(filtered_sentences, idx)] == anchor_doc
-    ]
-    if positive_options:
-      positive_idx = sample(positive_options, 1)[0]
-      positive_sentence = filtered_sentences[positive_idx]
-
-    # Choose a negative sentence (random from different doc)
-    negative_doc = choice(list(documents.keys()))
-    while negative_doc == anchor_doc:
-      negative_doc = choice(list(documents.keys()))
-    negative_options = [
-        sentence for sentence in filtered_sentences
-        if documents[filename_from_idx(filtered_sentences, idx)] == negative_doc
-    ]
-    negative_idx = sample(range(len(negative_options)), 1)[0]
-    negative_sentence = negative_options[negative_idx]
-
-    # Add the triplet to the numpy array
-    triplets[i] = (anchor_sentence, positive_sentence, negative_sentence)
-
-  # Save the triplets as a numpy array
+      # Randomly select an anchor sentence
+      anchor, anchor_file = choice(sentences)
+      # Find the index of the anchor sentence in the list
+      anchor_index = next((i for i, (sent, file) in enumerate(sentences) if sent == anchor and file == anchor_file), None)
+      # Select a positive match
+      pos_index = choice([anchor_index - 1, anchor_index + 1])
+      while sentences[pos_index][1] != anchor_file:
+          pos_index = choice([anchor_index - 1, anchor_index + 1])
+      positive, _ = sentences[pos_index]
+      # Select a negative match
+      negative, _ = choice(sentences)
+      while negative == anchor or negative == positive or _ == anchor_file:
+          negative, _ = choice(sentences)
+      # Add the triplet to the numpy array
+      triplets[i] = (anchor, positive, negative)
+    
+  # Save the numpy array to a file
   np.save(output_path, triplets)
-
-
-def filename_from_idx(sentences, idx):
-  """
-  Helper function to get the filename of a sentence based on its index.
-  """
-  for filename, doc in documents.items():
-    if sentences[idx] in doc:
-      return filename
-  return None
-
 
 
 
