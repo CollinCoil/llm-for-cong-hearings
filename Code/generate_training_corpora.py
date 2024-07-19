@@ -9,8 +9,7 @@ from random import choice
 import re
 from nltk.tokenize import sent_tokenize, word_tokenize
 
-# This code accepts two inputs:
-#     (1) the json file created by the query_s2orc.py file, and 
+
 def generate_pretraining_corpus(data_path:str):
   """
   This function takes a corpus of text and transforms it into a usable pretraining corpus. For the original project, the output of query_s2orc.py is the original pretraining corpus
@@ -36,10 +35,7 @@ def generate_pretraining_corpus(data_path:str):
 
 
 
-# Look into using billsum dataset: https://huggingface.co/datasets/FiscalNote/billsum/viewer/default/train
-# This can be an additional source for fine tuning because it includes text from bills. 
-
-def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:int = 500000):
+def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:int = 250000):
   """
   This code creates a fine-tuning corpus based on the text files in a directory. These text files were prepared in the same manner as those of the WLHIC, but 
   they are not being used to search for witness testimony impact. Furthermore, we use the BillSum dataset to augment our fine tuning corpus with additional legislative text. 
