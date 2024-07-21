@@ -22,6 +22,7 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
   """
   sentences = []
   tokenizer = PunktSentenceTokenizer()  # Initialize sentence tokenizer
+  id = 0
 
   for filename in os.listdir(text_directory):
     if filename.endswith(".txt"):
@@ -32,7 +33,8 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
       for sentence in document_sentences:
         sentence = sentence.strip()  # Remove leading/trailing whitespace
         if sentence:  # Avoid empty sentences
-          sentences.append({"document": filename, "text": sentence})
+          sentences.append({"ID": id, "document": filename, "text": sentence})
+          id += 1
 
   # Create pandas dataframe
   df = pd.DataFrame(sentences)
@@ -46,3 +48,8 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
 # Example usage
 text_directory = "Data/text"
 process_text(text_directory)
+
+
+
+## TODO: Write code to process the speeches in 20 word chunks instead of by sentence. 
+
