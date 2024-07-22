@@ -1003,3 +1003,17 @@ Data/Witness Statement Txt/William Vaughan Comprehensive Health Reform Discussio
 Data/Witness Statement Txt/William Vaughan Ways to Reduce the Cost of Health Insurance for Employers Employees and their Families 4-23-09.txt.txt
 Data/Witness Statement Txt/Yvonne Davis Primary Health Care Access Reform Community Health Centers and the National Health Service Corps 4-30-09.txt.txt
 Data/Witness Statement Txt/Zachary Mottl Hearing on How Tax Reform Will Grow Our Economy and Create Jobs 5-18-17.txt.txt
+Models/pretrained_roberta/1_Pooling/config.json
+Models/pretrained_roberta/vocab.json
+Models/pretrained_roberta/tokenizer.json
+Models/pretrained_roberta/special_tokens_map.json
+Models/pretrained_roberta/tokenizer_config.json
+Models/pretrained_roberta/sentence_bert_config.json
+Models/pretrained_roberta/README.md
+Models/pretrained_roberta/modules.json
+Models/pretrained_roberta/model.safetensors
+Models/pretrained_roberta/merges.txt
+Models/pretrained_roberta/config.json
+Models/pretrained_roberta/config_sentence_transformers.json
+Data/finetuning_text.npy
+Code/count_sentences.py
