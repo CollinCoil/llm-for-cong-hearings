@@ -1009,7 +1009,6 @@ Models/pretrained_roberta/tokenizer.json
 Models/pretrained_roberta/special_tokens_map.json
 Models/pretrained_roberta/tokenizer_config.json
 Models/pretrained_roberta/sentence_bert_config.json
-Models/pretrained_roberta/README.md
 Models/pretrained_roberta/modules.json
 Models/pretrained_roberta/model.safetensors
 Models/pretrained_roberta/merges.txt
