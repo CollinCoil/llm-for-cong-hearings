@@ -25,7 +25,7 @@ def generate_embeddings(model:str, corpus_file:str, output_file:str):
     embeddings = []
 
     # Open the corpus file
-    with open(corpus_file, 'r') as f:
+    with open(corpus_file, 'r', encoding='utf-8') as f:
         for line in f:
             # Load the json data from the line
             data = json.loads(line)

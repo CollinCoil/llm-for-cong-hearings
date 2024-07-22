@@ -19,7 +19,7 @@ def generate_pretraining_corpus(data_path:str):
   """
   abstracts = list()
   # Opens the json lines file and extracts the abstract text to add it to a list. 
-  with open(data_path, "r") as jsonfile:
+  with open(data_path, "r", encoding='utf-8') as jsonfile:
     for line in jsonfile:
       data = json.loads(line)
       abstract = data.get("abstract")
@@ -35,10 +35,10 @@ def generate_pretraining_corpus(data_path:str):
 
 
 
-def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:int = 250000):
+def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:int = 100000):
   """
   This code creates a fine-tuning corpus based on the text files in a directory. These text files were prepared in the same manner as those of the WLHIC, but 
-  they are not being used to search for witness testimony impact. Furthermore, we use the BillSum dataset to augment our fine tuning corpus with additional legislative text. 
+  they are not being used to search for witness testimony impact.
 
   Args:
       directory_path: Path to the directory containing text files.
@@ -54,7 +54,7 @@ def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:
       for file in files:
           if file.endswith(".txt"):
               # Open the file and read its content
-              with open(os.path.join(root, file), 'r') as f:
+              with open(os.path.join(root, file), 'r', encoding='utf-8') as f:
                   text = f.read()
                   # Tokenize the text into sentences
                   sents = sent_tokenize(text)

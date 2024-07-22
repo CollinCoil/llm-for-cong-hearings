@@ -27,7 +27,7 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
   for filename in os.listdir(text_directory):
     if filename.endswith(".txt"):
       filepath = os.path.join(text_directory, filename)
-      with open(filepath, "r") as file:
+      with open(filepath, "r", encoding='utf-8') as file:
         text = file.read()
       document_sentences = tokenizer.tokenize(text)  # Tokenize text using NLTK
       for sentence in document_sentences:
@@ -40,7 +40,7 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
   df = pd.DataFrame(sentences)
 
   # Write dataframe as json lines
-  with open(output_filename, "w") as outfile:
+  with open(output_filename, "w", encoding='utf-8') as outfile:
     for row in df.itertuples(index=False):
       json.dump(row, outfile)
       outfile.write("\n")

@@ -24,7 +24,7 @@ def extract_text_from_pdf(pdf_file: str, lower_page: int, upper_page: int, outpu
     doc = fitz.open(pdf_file)
 
     # Create or open the output text file in write mode
-    with open(output_text_file, 'w') as txt_file:
+    with open(output_text_file, 'w', encoding='utf-8') as txt_file:
         # Loop through each page in the specified range
         for page_number in range(lower_page-1, upper_page):
             page = doc.load_page(page_number)

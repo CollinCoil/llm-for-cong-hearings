@@ -25,7 +25,7 @@ def query_s2orc():
     retrieved = 0
     
     # Save articles in a json lines file
-    with open(f"Data/papers.jsonl", "a") as file:
+    with open(f"Data/papers.jsonl", "a", encoding='utf-8') as file:
         while True:
             if "data" in r:
                 retrieved += len(r["data"])

@@ -55,7 +55,7 @@ def read_jsonl(file_path_name:str):
     """
     texts = list()
     ids = list()
-    with open(file_path_name, "r") as jsonfile:
+    with open(file_path_name, "r", encoding='utf-8') as jsonfile:
         for line in jsonfile:
             data = json.loads(line)
             text = data.get("speech") # May need to change this string to whatever the text is saved as in the jsonl file

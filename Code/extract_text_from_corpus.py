@@ -41,7 +41,7 @@ def text_extraction(pdf_name: str, pages: Union[int, list] = None,
       if i+1 == pages:
         page = reader.pages[i]
         text = page.extract_text()
-        with open(f'{file_base_name}.txt', 'a') as f:
+        with open(f'{file_base_name}.txt', 'a', , encoding='utf-8') as f:
           f.write(text)
     
     
@@ -53,7 +53,7 @@ def text_extraction(pdf_name: str, pages: Union[int, list] = None,
       if i+1 in pages:
         page = reader.pages[i]
         text = page.extract_text()
-        with open(f'{file_base_name}.txt', 'a') as f:
+        with open(f'{file_base_name}.txt', 'a', , encoding='utf-8') as f:
           f.write(text)
 
 
@@ -67,10 +67,10 @@ def extract_from_files_in_directory(directory: str):
       directory: the path of the directory containing the PDF files. 
     """
     for filename in os.listdir(directory):
-      filename = "Data/Testimonies/" + filename
+      filename = "Data/test_folder/" + filename
       output_name = re.sub(".pdf", ".txt", filename)
       text_extraction(filename, file_base_name = output_name)
 
 
-extract_from_files_in_directory("Data/Testimonies")
+extract_from_files_in_directory("Data/test_folder")
       

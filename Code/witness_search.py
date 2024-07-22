@@ -17,7 +17,7 @@ def witness_search(witness_list:list, sentences_file:str, output_file:str="Data/
       sentences_file: Path to a JSON Lines file containing documents and text.
       output_file: Path to the output JSON Lines file (default: output.jsonl).
   """
-  with open(sentences_file, 'r') as f, open(output_file, 'w') as out:
+  with open(sentences_file, 'r', encoding='utf-8') as f, open(output_file, 'w', encoding='utf-8') as out:
     for witness in witness_list:
       # Split witness name by spaces for individual word search
       witness_parts = witness.split()
