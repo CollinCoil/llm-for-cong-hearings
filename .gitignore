@@ -1016,3 +1016,5 @@ Models/pretrained_roberta/config.json
 Models/pretrained_roberta/config_sentence_transformers.json
 Data/finetuning_text.npy
 Code/count_sentences.py
+Data/abstracts.txt
+Data/finetuning_text.txt
