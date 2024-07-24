@@ -7,7 +7,7 @@ import numpy as np
 import os
 from random import choice
 import re
-from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.tokenize import sent_tokenize, word_tokenize, PunktSentenceTokenizer
 
 
 def generate_pretraining_corpus(data_path:str):
@@ -18,7 +18,9 @@ def generate_pretraining_corpus(data_path:str):
     data_path: a string for the directory of the original corpus
   """
   abstracts = list()
-  # Opens the json lines file and extracts the abstract text to add it to a list. 
+  tokenizer = PunktSentenceTokenizer()  # Initialize PunktSentenceTokenizer
+
+  # Opens the json lines file and extracts the abstract text 
   with open(data_path, "r", encoding='utf-8') as jsonfile:
     for line in jsonfile:
       data = json.loads(line)
@@ -28,14 +30,21 @@ def generate_pretraining_corpus(data_path:str):
         line_skip = "\n"
         abstract = re.sub(line_skip, " ", abstract)
         abstract = abstract.strip()
-        abstracts.append(abstract)
+
+        # Split abstract into sentences using PunktSentenceTokenizer
+        sentences = tokenizer.tokenize(abstract)
+
+        # Append each sentence to the abstracts list
+        abstracts.extend(sentences)
 
   abstract_array = np.array(abstracts)
-  np.save("Data/abstracts.npy", abstract_array)
+  # Save to desired output file with UTF-8 encoding
+  with open("Data/abstracts.txt", "w", encoding="utf-8") as f:
+    np.savetxt(f, abstract_array, delimiter="\t", fmt="%s")  # Save as text file
 
 
 
-def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:int = 100000):
+def generate_finetuning_corpus(directory_path:str, output_path:str = "output.jsonl", corpus_size:int = 150000):
   """
   This code creates a fine-tuning corpus based on the text files in a directory. These text files were prepared in the same manner as those of the WLHIC, but 
   they are not being used to search for witness testimony impact.
@@ -59,7 +68,7 @@ def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:
                   # Tokenize the text into sentences
                   sents = sent_tokenize(text)
                   # Filter out sentences that are too short
-                  sents = [sent for sent in sents if len(word_tokenize(sent)) > 5]
+                  sents = [sent for sent in sents if len(word_tokenize(sent)) > 8]
                   # Add the sentences to the list, keeping track of their origin
                   sentences.extend([(sent, file) for sent in sents])
   
@@ -84,12 +93,13 @@ def generate_finetuning_corpus(directory_path:str, output_path:str, corpus_size:
       # Add the triplet to the numpy array
       triplets[i] = (anchor, positive, negative)
     
-  # Save the numpy array to a file
-  np.save(output_path, triplets)
-
+  # Save to desired output file with UTF-8 encoding
+  with open("Data/finetuning_text.txt", "w", encoding="utf-8") as f:
+    np.savetxt(f, triplets, delimiter="\t", fmt="%s")  # Save as text file
 
 
 
 
 
 generate_pretraining_corpus("Data/papers.jsonl")
+generate_finetuning_corpus(directory_path = '../../Fine Tuning Text', output_path = 'Data/finetuning_text.npy', corpus_size = 200000)

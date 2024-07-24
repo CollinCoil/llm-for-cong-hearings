@@ -7,31 +7,44 @@ fine tuning corpora generated from using the generate_trainig_corpora.py file.
 from sentence_transformers import SentenceTransformer, InputExample
 from sentence_transformers import losses
 from torch.utils.data import DataLoader
-import numpy as np
-import torch
-import nltk
-nltk.download('punkt')
 
 
-def fine_tune_model(model:str, data):
+def read_triplet_data(file_path):
+    """
+    Reads triplet data from a text file where each line is a separate triplet example.
+    
+    Args:
+        file_path: The path to the text file containing the triplet data.
+    
+    Returns:
+        A list of tuples, each containing three strings (anchor, positive, negative).
+    """
+    triplets = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            anchor, positive, negative = line.strip().split('\t')
+            triplets.append((anchor, positive, negative))
+    return triplets
+
+
+
+def fine_tune_model(model_path: str, data_path: str):
     """
     This takes a pretrained sentence transformer model and a fine-tuning dataset to fine tune the model. It uses the triplet loss function, so training data must be set up as 
     (anchor sentence, similar sentence, dissimilar sentence). Once the model is fine tuned, it is saved. 
 
     Args: 
-        model: a string of the directory where the model is stored
-        data: the fine-tuning data set
+        model_path: a string of the directory where the model is stored
+        data_path: the fine-tuning data set
     """
     # Load the pre-trained model
-    model = SentenceTransformer(model)
+    model = SentenceTransformer(model_path)
 
     # Load the fine-tuning data
-    data = np.load('Data/finetuning_data.npy')
+    data = read_triplet_data(data_path)
 
     # Create a list of InputExample from the data
-    examples = []
-    for anchor, positive, negative in data:
-        examples.append(InputExample(texts=[anchor, positive, negative], label=0.0))
+    examples = [InputExample(texts=[anchor, positive, negative]) for anchor, positive, negative in data]
 
     # Create a DataLoader for the examples
     train_dataloader = DataLoader(examples, shuffle=True, batch_size=16, num_workers=16)
@@ -39,25 +52,16 @@ def fine_tune_model(model:str, data):
     # Define the loss function
     loss_function = losses.TripletLoss(model=model)
 
-    # Set up a warmup step for the optimizer
-    warmup_steps = int(len(train_dataloader) * 0.1)  # Warmup for 10% of the training data
-
-    # Configure the optimizer
-    optimizer = torch.optim.Adam(model.parameters(), lr=1e-5, eps=1e-8)
-
-    # Schedule the learning rate
-    scheduler = torch.optim.lr_scheduler.OneCycleLR(
-        optimizer, max_lr=2e-5, total_steps=len(train_dataloader), epochs=5, steps_per_epoch=len(train_dataloader), pct_start=0.3
-    )
-
     # Fine-tune the model
-    model.fit(train_objectives=[(train_dataloader, loss_function)], epochs=5, warmup_steps=warmup_steps, optimizer=optimizer, scheduler=scheduler)
+    model.fit(train_objectives=[(train_dataloader, loss_function)],
+              epochs=10,
+              scheduler="warmuplinear",
+              optimizer_params={"lr": 3e-5},
+              show_progress_bar=True,
+              output_path="Models/finetuned_model")
 
     # Save the fine-tuned model
     model.save('Models/finetuned_model')
 
-
-
-finetuning_data = np.load("Data/finetuning_data.npy")
-model = "Model/pretrained_roberta"
-fine_tune_model(model, finetuning_data)
+if __name__ == '__main__':
+    fine_tune_model(model_path="Models/pretrained_roberta", data_path="Data/finetuning_text.txt")

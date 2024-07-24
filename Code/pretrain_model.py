@@ -1,15 +1,13 @@
 """
 This file contains code used for extended pre-training of a sentence transformers model. 
 It needs a pretrained model (which can be found on https://www.sbert.net/docs/pretrained_models.html#sentence-embedding-models)
-and the pretraining corporus generated from using the generate_trainig_corpora.py file. 
+and the pretraining corporus generated from using the generate_training_corpora.py file. 
 """
 
 from sentence_transformers import SentenceTransformer
 from sentence_transformers import datasets,  losses
 from torch.utils.data import DataLoader
 import numpy as np
-import nltk
-nltk.download('punkt')
 
 # The following code continues pretraining of a pretrained model with TSDAE, 
 # See https://www.sbert.net/examples/unsupervised_learning/TSDAE/README.html
@@ -41,11 +39,9 @@ def pretrain_model(model: str, data):
     model.fit(
         train_objectives=[(train_dataloader, train_loss)],
         epochs=10,
-        weight_decay=0,
         scheduler="warmuplinear",
         optimizer_params={"lr": 3e-5},
         show_progress_bar=True,
-        save_best_model=True,
         output_path="pretrained_roberta"
     )
 
@@ -55,8 +51,8 @@ def pretrain_model(model: str, data):
 
 
 
-
-
-pretraining_data = np.load("Data/abstracts.npy")
+with open("Data/abstracts.txt", 'r', encoding='utf-8') as file:
+        data = file.readlines()
+        pretraining_data = [line.strip() for line in data]
 model = SentenceTransformer("all-distilroberta-v1")
 pretrain_model(model, pretraining_data)
