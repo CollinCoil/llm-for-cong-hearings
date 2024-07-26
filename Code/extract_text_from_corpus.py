@@ -6,15 +6,13 @@ directory for the program to run without error.
 """
 
 from typing import Union
-from os.path import exists
-import requests
 from PyPDF2 import PdfReader
 import os
 import re
 
 
 def text_extraction(pdf_name: str, pages: Union[int, list] = None, 
-                     file_base_name: str = "text"):
+                     file_base_name: str = "text.txt"):
   """
   Extracts text from PDF files. This text must be in a digitally native PDF or PDF that has had OCR performed. 
 
@@ -41,7 +39,7 @@ def text_extraction(pdf_name: str, pages: Union[int, list] = None,
       if i+1 == pages:
         page = reader.pages[i]
         text = page.extract_text()
-        with open(f'{file_base_name}.txt', 'a', , encoding='utf-8') as f:
+        with open(file_base_name, 'a', encoding='utf-8') as f:
           f.write(text)
     
     
