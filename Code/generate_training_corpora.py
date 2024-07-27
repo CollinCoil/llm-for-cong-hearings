@@ -34,13 +34,16 @@ def generate_pretraining_corpus(data_path:str):
         # Split abstract into sentences using PunktSentenceTokenizer
         sentences = tokenizer.tokenize(abstract)
 
-        # Append each sentence to the abstracts list
-        abstracts.extend(sentences)
+        # Only add sentences to the abstracts list if they have 3 or more words
+        for sentence in sentences:
+          if len(word_tokenize(sentence)) >= 3:
+            abstracts.append(sentence)
 
   abstract_array = np.array(abstracts)
   # Save to desired output file with UTF-8 encoding
-  with open("Data/abstracts.txt", "w", encoding="utf-8") as f:
+  with open("abstracts.txt", "w", encoding="utf-8") as f:
     np.savetxt(f, abstract_array, delimiter="\t", fmt="%s")  # Save as text file
+
 
 
 
