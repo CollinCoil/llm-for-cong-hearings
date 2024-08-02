@@ -47,9 +47,9 @@ The model was trained with the parameters:
 
 **DataLoader**:
 
-`torch.utils.data.dataloader.DataLoader` of length 2277 with parameters:
+`torch.utils.data.dataloader.DataLoader` of length 52234 with parameters:
 ```
-{'batch_size': 32, 'sampler': 'torch.utils.data.sampler.RandomSampler', 'batch_sampler': 'torch.utils.data.sampler.BatchSampler'}
+{'batch_size': 16, 'sampler': 'torch.utils.data.sampler.RandomSampler', 'batch_sampler': 'torch.utils.data.sampler.BatchSampler'}
 ```
 
 **Loss**:
@@ -67,10 +67,10 @@ Parameters of the fit()-Method:
     "optimizer_params": {
         "lr": 3e-05
     },
-    "scheduler": "constantlr",
+    "scheduler": "warmuplinear",
     "steps_per_epoch": null,
     "warmup_steps": 10000,
-    "weight_decay": 0
+    "weight_decay": 0.01
 }
 ```
 
