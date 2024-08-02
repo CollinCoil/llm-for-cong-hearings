@@ -98,7 +98,7 @@ def generate_finetuning_corpus(directory_path:str, output_path:str = "output.jso
     
   # Save to desired output file with UTF-8 encoding
   with open("Data/finetuning_text.txt", "w", encoding="utf-8") as f:
-    np.savetxt(f, triplets, delimiter="\t", fmt="%s")  # Save as text file
+    np.savetxt(f, triplets, delimiter="|", fmt="%s")  # Save as text file
 
 
 
