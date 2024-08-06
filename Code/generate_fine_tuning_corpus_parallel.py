@@ -44,7 +44,7 @@ def generate_triplet(sentences, sentence_dict):
     return (anchor, positive, negative)
 
 
-def generate_finetuning_corpus(directory_path: str, output_path: str = "output.jsonl", corpus_size: int = 250000):
+def generate_finetuning_corpus(directory_path: str, output_path: str = "output.jsonl", corpus_size: int = 200000):
     """
     This code creates a fine-tuning corpus based on the text files in a directory.
 
@@ -87,4 +87,4 @@ def generate_finetuning_corpus(directory_path: str, output_path: str = "output.j
         np.savetxt(f, triplets, delimiter="|", fmt="%s", encoding="utf-8")
 
 
-generate_finetuning_corpus(directory_path = '../../Fine Tuning Text', output_path = 'Data/finetuning_text.npy', corpus_size = 250000)
+generate_finetuning_corpus(directory_path = '../../Fine Tuning Text', output_path = 'Data/finetuning_text.npy', corpus_size = 200000)
