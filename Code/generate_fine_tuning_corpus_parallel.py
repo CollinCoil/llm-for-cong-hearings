@@ -9,17 +9,26 @@ import numpy as np
 from random import choice
 from nltk.tokenize import sent_tokenize, word_tokenize
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import re
+
+def clean_sentence(sentence):
+    """
+    Clean a sentence by removing extraneous characters.
+    """
+    sentence = re.sub(r'[\t\n|]', ' ', sentence)  # Replace \t, \n, and | with a space
+    sentence = re.sub(r'\s+', ' ', sentence)  # Replace multiple spaces with a single space
+    return sentence.strip()  # Remove leading and trailing spaces
 
 
 def process_file(file_path):
     """
     Process a single file: read the content, tokenize into sentences,
-    filter out short sentences, and return a list of sentences with their origin.
+    filter out short sentences, and return a list of cleaned sentences with their origin.
     """
     with open(file_path, 'r', encoding='utf-8') as f:
         text = f.read()
         sents = sent_tokenize(text)
-        sents = [sent for sent in sents if len(word_tokenize(sent)) > 8]
+        sents = [clean_sentence(sent) for sent in sents if len(word_tokenize(sent)) > 8]
         return [(sent, os.path.basename(file_path)) for sent in sents]
 
 
@@ -44,7 +53,7 @@ def generate_triplet(sentences, sentence_dict):
     return (anchor, positive, negative)
 
 
-def generate_finetuning_corpus(directory_path: str, output_path: str = "output.jsonl", corpus_size: int = 200000):
+def generate_finetuning_corpus(directory_path: str, output_path: str = "output.jsonl", corpus_size: int = 150000):
     """
     This code creates a fine-tuning corpus based on the text files in a directory.
 
@@ -85,6 +94,7 @@ def generate_finetuning_corpus(directory_path: str, output_path: str = "output.j
     # Save to the desired output file with UTF-8 encoding
     with open(output_path, "w", encoding="utf-8") as f:
         np.savetxt(f, triplets, delimiter="|", fmt="%s", encoding="utf-8")
+
 
 
 generate_finetuning_corpus(directory_path = '../../Fine Tuning Text', output_path = 'Data/finetuning_text.npy', corpus_size = 200000)
