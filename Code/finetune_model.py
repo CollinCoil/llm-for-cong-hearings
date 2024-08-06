@@ -56,7 +56,7 @@ def fine_tune_model(model_path: str, data_path: str):
     model.fit(train_objectives=[(train_dataloader, loss_function)],
               epochs=10,
               scheduler="warmuplinear",
-              optimizer_params={"lr": 3e-5},
+              optimizer_params={"lr": 1e-5},
               show_progress_bar=True,
               output_path="Models/finetuned_model")
 
