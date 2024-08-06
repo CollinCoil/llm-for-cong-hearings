@@ -1,5 +1,5 @@
 """
-The goal is to generate two corpora and output csv files that will be used in pretrain_model.py for extended pre-training and finetune_model.py for fine-tuning 
+The goal is to generate two corpora and output txt files that will be used in pretrain_model.py for extended pre-training and finetune_model.py for fine-tuning 
 of the sentence transformers model. 
 """
 import json
