@@ -51,7 +51,7 @@ def text_extraction(pdf_name: str, pages: Union[int, list] = None,
       if i+1 in pages:
         page = reader.pages[i]
         text = page.extract_text()
-        with open(f'{file_base_name}.txt', 'a', , encoding='utf-8') as f:
+        with open(f'{file_base_name}.txt', 'a', encoding='utf-8') as f:
           f.write(text)
 
 
