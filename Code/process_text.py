@@ -11,6 +11,8 @@ import os
 import pandas as pd
 import json
 from nltk.data import PunktSentenceTokenizer
+import json
+import string
 
 def process_text(text_directory: str, output_filename: str = "Data/output.jsonl") -> None:
   """
@@ -22,9 +24,10 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
   """
   sentences = []
   tokenizer = PunktSentenceTokenizer()  # Initialize sentence tokenizer
-  id = 0
+
 
   for filename in os.listdir(text_directory):
+    id = 0
     if filename.endswith(".txt"):
       filepath = os.path.join(text_directory, filename)
       with open(filepath, "r", encoding='utf-8') as file:
@@ -51,5 +54,46 @@ process_text(text_directory)
 
 
 
-## TODO: Write code to process the speeches in 20 word chunks instead of by sentence. 
+def process_floor_speeches(input_json: str, output_json: str) -> None:
+    """
+    Processes a JSON file containing speeches by stripping punctuation, splitting speeches into
+    15-word sentences, and saving the processed data into a new JSON file.
 
+    Args:
+        input_json: Path to the input JSON file containing the speeches.
+        output_json: Path to the output JSON file where processed sentences will be saved.
+    """
+    
+    # Load the input JSON file
+    with open(input_json, 'r', encoding='utf-8') as infile:
+        data = json.load(infile)
+    
+    sentences = []
+
+    # Process each speech
+    for entry in data:
+        speech_id = entry.get("speech_id")
+        speech = entry.get("speech", "")
+        
+        # Remove punctuation
+        speech = speech.translate(str.maketrans('', '', string.punctuation))
+        
+        # Split the speech into words
+        words = speech.split()
+        
+        # Break the speech into 15-word sentences
+        for i in range(0, len(words), 15):
+            sentence_words = words[i:i + 15]
+            sentence = ' '.join(sentence_words)
+            sentences.append({
+                "sentence_id": i,  # Unique ID for each sentence
+                "speech_id": speech_id,
+                "sentence": sentence
+            })
+
+    # Save the processed sentences to the output JSON file
+    with open(output_json, 'w', encoding='utf-8') as outfile:
+        json.dump(sentences, outfile, indent=4)
+
+
+process_floor_speeches(input_json = "Data/relevant_speeches_110.jsonl", output_json = "Data/relevant_speeches_110_sentences.jsonl")
