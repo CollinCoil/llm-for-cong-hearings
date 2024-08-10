@@ -54,22 +54,21 @@ text_directory = "Data/text"
 
 
 
-def process_floor_speeches(input_json: str, output_json: str) -> None:
+def process_floor_speeches(input_jsonl: str, output_jsonl: str) -> None:
     """
-    Processes a JSON file containing speeches by stripping punctuation, splitting speeches into
-    15-word sentences, and saving the processed data into a new JSON file.
+    Processes a JSONL file containing speeches by stripping punctuation, splitting speeches into
+    15-word sentences, and saving the processed data into a new JSONL file.
 
     Args:
-        input_json: Path to the input JSON file containing the speeches.
-        output_json: Path to the output JSON file where processed sentences will be saved.
+        input_jsonl: Path to the input JSON file containing the speeches.
+        output_jsonl: Path to the output JSON file where processed sentences will be saved.
     """
     
-    # Load the input JSON file
     sentences = []
 
-    with open(input_json, 'r', encoding='utf-8') as infile:
+    with open(input_jsonl, 'r', encoding='utf-8') as infile:
         for line in infile:
-            entry = json.loads(line.strip())  # Load each JSON object line by line
+            entry = json.loads(line.strip())  # Load each JSONL object line by line
             
             speech_id = entry.get("speech_id")
             speech = entry.get("speech", "")
@@ -82,19 +81,21 @@ def process_floor_speeches(input_json: str, output_json: str) -> None:
             
             # Break the speech into 15-word sentences
             sentence_id = 0
-            for i in range(0, len(words), 15):
-                sentence_words = words[i:i + 15]
+            for i in range(0, len(words), 20):
+                sentence_words = words[i:i + 20]
                 sentence = ' '.join(sentence_words)
                 sentences.append({
-                    "sentence_id": sentence_id,  # Unique ID for each sentence
-                    "speech_id": speech_id,
-                    "sentence": sentence
+                    "ID": sentence_id,  # Unique ID for each sentence
+                    "document": speech_id,
+                    "text": sentence
                 })
                 sentence_id += 1
 
-    # Save the processed sentences to the output JSON file
-    with open(output_json, 'w', encoding='utf-8') as outfile:
-        json.dump(sentences, outfile, indent=4)
+    # Save the processed sentences to the output JSONL file
+    with open(output_jsonl, 'w', encoding='utf-8') as outfile:
+        for sentence_entry in sentences:
+            json.dump(sentence_entry, outfile, ensure_ascii=False)
+            outfile.write('\n')
 
 
-process_floor_speeches(input_json = "Data/relevant_speeches_110.jsonl", output_json = "Data/relevant_speeches_110_sentences.jsonl")
+process_floor_speeches(input_jsonl = "Data/relevant_speeches_114.jsonl", output_jsonl = "Data/relevant_speeches_114_sentences.jsonl")
