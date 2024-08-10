@@ -65,31 +65,32 @@ def process_floor_speeches(input_json: str, output_json: str) -> None:
     """
     
     # Load the input JSON file
-    with open(input_json, 'r', encoding='utf-8') as infile:
-        data = json.load(infile)
-    
     sentences = []
 
-    # Process each speech
-    for entry in data:
-        speech_id = entry.get("speech_id")
-        speech = entry.get("speech", "")
-        
-        # Remove punctuation
-        speech = speech.translate(str.maketrans('', '', string.punctuation))
-        
-        # Split the speech into words
-        words = speech.split()
-        
-        # Break the speech into 15-word sentences
-        for i in range(0, len(words), 15):
-            sentence_words = words[i:i + 15]
-            sentence = ' '.join(sentence_words)
-            sentences.append({
-                "sentence_id": i,  # Unique ID for each sentence
-                "speech_id": speech_id,
-                "sentence": sentence
-            })
+    with open(input_json, 'r', encoding='utf-8') as infile:
+        for line in infile:
+            entry = json.loads(line.strip())  # Load each JSON object line by line
+            
+            speech_id = entry.get("speech_id")
+            speech = entry.get("speech", "")
+            
+            # Remove punctuation
+            speech = speech.translate(str.maketrans('', '', string.punctuation))
+            
+            # Split the speech into words
+            words = speech.split()
+            
+            # Break the speech into 15-word sentences
+            sentence_id = 0
+            for i in range(0, len(words), 15):
+                sentence_words = words[i:i + 15]
+                sentence = ' '.join(sentence_words)
+                sentences.append({
+                    "sentence_id": sentence_id,  # Unique ID for each sentence
+                    "speech_id": speech_id,
+                    "sentence": sentence
+                })
+                sentence_id += 1
 
     # Save the processed sentences to the output JSON file
     with open(output_json, 'w', encoding='utf-8') as outfile:
