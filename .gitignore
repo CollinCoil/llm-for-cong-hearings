@@ -1018,3 +1018,15 @@ Data/finetuning_text.npy
 Code/count_sentences.py
 Data/abstracts.txt
 Data/finetuning_text.txt
+Models/finetuned_model/1_Pooling/config.json
+Models/finetuned_model/vocab.json
+Models/finetuned_model/tokenizer.json
+Models/finetuned_model/tokenizer_config.json
+Models/finetuned_model/special_tokens_map.json
+Models/finetuned_model/sentence_bert_config.json
+Models/finetuned_model/modules.json
+Models/finetuned_model/model.safetensors
+Models/finetuned_model/merges.txt
+Models/finetuned_model/config.json
+Models/finetuned_model/config_sentence_transformers.json
+Data/finetuning_text_3.txt
