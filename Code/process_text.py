@@ -10,7 +10,7 @@ This output is then used in generate_embeddings.py and witness_search.py.
 import os
 import pandas as pd
 import json
-from nltk.data import PunktSentenceTokenizer
+from nltk.tokenize import PunktSentenceTokenizer
 import json
 import string
 
@@ -50,7 +50,7 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
 
 # Example usage
 text_directory = "Data/text"
-process_text(text_directory)
+# process_text(text_directory)
 
 
 
