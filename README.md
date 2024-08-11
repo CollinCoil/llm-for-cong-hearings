@@ -24,4 +24,5 @@ pip install -v -e .
 This command will install all the required packages listed in the requirements.txt file.
 
 # Paper and Citation
+If you use this code, please cite [citation]
 A link to the paper will be published here once it is available. A citation will be provided below.
