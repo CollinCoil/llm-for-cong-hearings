@@ -1030,3 +1030,14 @@ Models/finetuned_model/merges.txt
 Models/finetuned_model/config.json
 Models/finetuned_model/config_sentence_transformers.json
 Data/finetuning_text_3.txt
+Data/relevant_speeches_110_sentences.jsonl
+Data/relevant_speeches_111_sentences.jsonl
+Data/relevant_speeches_112_sentences.jsonl
+Data/relevant_speeches_113_sentences.jsonl
+Data/relevant_speeches_114_sentences.jsonl
+Data/witness_names.csv
+Data/Witness References/witness_direct_references_110_floor_speeches.jsonl
+Data/Witness References/witness_direct_references_111_floor_speeches.jsonl
+Data/Witness References/witness_direct_references_112_floor_speeches.jsonl
+Data/Witness References/witness_direct_references_113_floor_speeches.jsonl
+Data/Witness References/witness_direct_references_114_floor_speeches.jsonl
