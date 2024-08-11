@@ -25,9 +25,9 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
   sentences = []
   tokenizer = PunktSentenceTokenizer()  # Initialize sentence tokenizer
 
-
+  id = 0 # will help find each sentence in the semantic textual similarity matrix
   for filename in os.listdir(text_directory):
-    id = 0
+    
     if filename.endswith(".txt"):
       filepath = os.path.join(text_directory, filename)
       with open(filepath, "r", encoding='utf-8') as file:
