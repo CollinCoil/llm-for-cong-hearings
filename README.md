@@ -13,7 +13,7 @@ conda activate llm_for_congress
 Some of the code may require the Microsoft Visual C++ Redistributable. You can download and install it [here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170).
 
 ### Step 3: Install Tesseract
-You will need to install Tesseract before running the setup file. Instructions for installation can be found [here](https://tesseract-ocr.github.io/tessdoc/Installation.html).
+You will need to install Tesseract before running the setup file. Tesseract is necessary to perform OCR with pytesseract. If you are not performing OCR, you can remove pytesseract from the `requirements.txt` file. Instructions for Tesseract installation can be found [here](https://tesseract-ocr.github.io/tessdoc/Installation.html).
 
 ### Step 4: Run the Setup Script
 After setting up the conda environment and installing the necessary dependencies, navigate to the root directory of this repository and run the following command:
@@ -23,5 +23,5 @@ pip install -v -e .
 ```
 This command will install all the required packages listed in the requirements.txt file.
 
-# Citation
-Coming
+# Paper and Citation
+A link to the paper will be published here once it is available. A citation will be provided below.
