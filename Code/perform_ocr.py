@@ -9,6 +9,8 @@ import fitz
 from PIL import Image, ImageEnhance
 import pytesseract
 import io
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Update with your path
+
 
 def extract_text_from_pdf(pdf_file: str, lower_page: int, upper_page: int, output_text_file: str="extracted_text.txt"):
     """
@@ -51,4 +53,4 @@ def extract_text_from_pdf(pdf_file: str, lower_page: int, upper_page: int, outpu
                 txt_file.write(extracted_text + "\n")
 
 
-extract_text_from_pdf("trial_hearing.pdf", 73, 122)
+extract_text_from_pdf(r"testing.pdf", 71, 79)
