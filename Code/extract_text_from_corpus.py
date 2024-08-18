@@ -65,10 +65,10 @@ def extract_from_files_in_directory(directory: str):
       directory: the path of the directory containing the PDF files. 
     """
     for filename in os.listdir(directory):
-      filename = "Data/test_folder/" + filename
+      filename = directory + filename
       output_name = re.sub(".pdf", ".txt", filename)
       text_extraction(filename, file_base_name = output_name)
 
 
-extract_from_files_in_directory("Data/test_folder")
+extract_from_files_in_directory("Data/Agencies")
       
