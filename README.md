@@ -24,14 +24,14 @@ pip install -v -e .
 This command will install all the required packages listed in the requirements.txt file.
 
 # Paper and Citation
-If you use this code, please cite the following citation: 
+If you use this code, please use the following citation: 
 
+```
 @article{Coil2024Congressional,
   title={Congressional Witnesses Matter: Proving Witness Testimony Impact Using Large Language Models},
   author={Coil, Collin and Brucker, Caroline and Chen, Nicholas and Keith, Elizabeth and O'Connor, Karen},
   journal={Unpublished manuscript},
   year={2024}
 }
-
-
+```
 A link to the paper will be published here once it is available. 
