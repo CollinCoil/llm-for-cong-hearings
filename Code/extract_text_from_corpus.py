@@ -12,14 +12,14 @@ import re
 
 
 def text_extraction(pdf_name: str, pages: Union[int, list] = None, 
-                     file_base_name: str = "text.txt"):
+                     output_file_name: str = "text.txt"):
   """
   Extracts text from PDF files. This text must be in a digitally native PDF or PDF that has had OCR performed. 
 
   Args: 
     pdf_name: file name from which text should be extracted
     pages: page number or list of pages from which text should be removed. 
-    file_base_name: name for the output txt file
+    output_file_name: name for the output txt file
   """
   
   # Checks if pdf file is in directory, downloads if not in directory
@@ -30,7 +30,7 @@ def text_extraction(pdf_name: str, pages: Union[int, list] = None,
     for i in range(len(reader.pages)):
       page = reader.pages[i]
       text = page.extract_text()
-      with open(f'{file_base_name}.txt', 'a', encoding='utf-8') as f:
+      with open(output_file_name, 'a', encoding='utf-8') as f:
         f.write(text)
 
   # User wants images from one page:
@@ -39,7 +39,7 @@ def text_extraction(pdf_name: str, pages: Union[int, list] = None,
       if i+1 == pages:
         page = reader.pages[i]
         text = page.extract_text()
-        with open(file_base_name, 'a', encoding='utf-8') as f:
+        with open(output_file_name, 'a', encoding='utf-8') as f:
           f.write(text)
     
     
@@ -51,7 +51,7 @@ def text_extraction(pdf_name: str, pages: Union[int, list] = None,
       if i+1 in pages:
         page = reader.pages[i]
         text = page.extract_text()
-        with open(f'{file_base_name}.txt', 'a', encoding='utf-8') as f:
+        with open(output_file_name, 'a', encoding='utf-8') as f:
           f.write(text)
 
 
@@ -67,7 +67,7 @@ def extract_from_files_in_directory(directory: str):
     for filename in os.listdir(directory):
       filename = os.path.join(directory, filename)
       output_name = re.sub(".pdf", ".txt", filename)
-      text_extraction(filename, file_base_name = output_name)
+      text_extraction(filename, output_file_name = output_name)
 
 
 extract_from_files_in_directory("Data/Agencies")
