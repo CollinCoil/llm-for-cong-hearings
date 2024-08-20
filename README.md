@@ -23,6 +23,9 @@ pip install -v -e .
 ```
 This command will install all the required packages listed in the requirements.txt file.
 
+# Data
+The data for this project is accessible on Zenodo. The link will be published here once it is available. 
+
 # Paper and Citation
 If you use this code, please use the following citation: 
 
