@@ -25,10 +25,9 @@ def clean_text_file(filepath: str) -> None:
     # Replace new line characters with spaces
     content = content.replace('\n', ' ')
 
-    # Perform the double space removal for 5 iterations
-    for _ in range(5):
-        # Use regular expression to replace multiple spaces with a single space
-        content = re.sub(r' {2,}', ' ', content)
+
+    # Use regular expression to replace multiple spaces with a single space
+    content = re.sub(r' {2,}', ' ', content)
 
     # Write the cleaned content back to the file
     with open(filepath, 'w', encoding='utf-8') as file:
