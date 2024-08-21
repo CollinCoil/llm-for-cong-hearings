@@ -23,7 +23,7 @@ def clean_text_file(filepath: str) -> None:
         content = file.read()
 
     # Replace new line characters with spaces
-    content = content.replace('\n', ' ')
+    content = content.replace('\n', ' ').replace('\t', ' ')
 
 
     # Use regular expression to replace multiple spaces with a single space
