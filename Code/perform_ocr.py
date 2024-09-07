@@ -1,25 +1,62 @@
 """
-This program is designed to extract text from a specified range of pages in a PDF file, enhancing image contrast and performing OCR on images.
-This is to be used for non-digital-native PDFs, or documents that have been scanned into PDF format. These documents (or parts of documents)
-can be identified text cannot be highlighted. It loops over the selected pages of an input file, extracts the images the text is stored in, 
-and performs optical character recognition (OCR) to extract the text. 
+This program is designed to extract text from directories of PDFs, converting all pages to images, enhancing image contrast, 
+and performing OCR on images. This is to be used for non-digital-native PDFs or PDFs that have high error when using other 
+extraction tools (such as extract_text_from_corpus.py). This program loops over the pages of each file in the directory, 
+converts each page to an image, and performs optical character recognition (OCR) to extract the text. 
 """
 
+import os
 import fitz
 from PIL import Image, ImageEnhance
 import pytesseract
 import io
+import concurrent.futures
+import re
+
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'  # Update with your path
 
-
-def extract_text_from_pdf(pdf_file: str, lower_page: int, upper_page: int, output_text_file: str="extracted_text.txt"):
+def preprocess_image(image):
     """
-    This code extracts text from PDF documents that have not have had OCR performed. 
+    Preprocess the image to improve OCR accuracy.
 
-    Args: 
+    Args:
+        image: The input image.
+
+    Returns:
+        The preprocessed image.
+    """
+    # Convert the image to grayscale
+    # image = image.convert("L")
+
+    # Enhance the contrast of the image
+    enhancer = ImageEnhance.Contrast(image)
+    image = enhancer.enhance(1.25)
+
+
+    return image
+
+def postprocess_text(text):
+    """
+    Postprocess the text to correct errors and improve accuracy.
+
+    Args:
+        text: The input text.
+
+    Returns:
+        The postprocessed text.
+    """
+    # Remove leading apostrophes
+    text = re.sub(r"^‘", "", text, flags=re.MULTILINE) # These are commonly added by the program erroneously 
+
+
+    return text
+
+def extract_text_from_pdf(pdf_file: str, output_text_file: str):
+    """
+    This code extracts text from PDF documents that have not have had OCR performed.
+
+    Args:
         pdf_file: The path to the PDF file.
-        lower_page: The starting page (1-based index).
-        upper_page: The ending page (1-based index, inclusive).
         output_text_file: The path to the output text file.
     """
     # Open the PDF file
@@ -27,30 +64,43 @@ def extract_text_from_pdf(pdf_file: str, lower_page: int, upper_page: int, outpu
 
     # Create or open the output text file in write mode
     with open(output_text_file, 'w', encoding='utf-8') as txt_file:
-        # Loop through each page in the specified range
-        for page_number in range(lower_page-1, upper_page):
+        # Loop through each page in the PDF
+        for page_number in range(doc.page_count):
             page = doc.load_page(page_number)
-            
-            # Get images on the page
-            image_list = page.get_images(full=True)
-            
-            for img_index, img in enumerate(image_list):
-                xref = img[0]
-                base_image = doc.extract_image(xref)
-                image_bytes = base_image["image"]
-                
-                # Open the image with PIL
-                image = Image.open(io.BytesIO(image_bytes))
-                
-                # Enhance the contrast of the image
-                enhancer = ImageEnhance.Contrast(image)
-                enhanced_image = enhancer.enhance(3)
-                
-                # Perform OCR on the enhanced image
-                extracted_text = pytesseract.image_to_string(enhanced_image)
-                
-                # Write the extracted text to the output file
-                txt_file.write(extracted_text + "\n")
 
+            # Render the page as a Pixmap object
+            pix = page.get_pixmap(dpi = 900)
 
-extract_text_from_pdf(r"testing.pdf", 71, 79)
+            # Convert the Pixmap object to a PIL image
+            image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+            # Preprocess the image
+            image = preprocess_image(image)
+
+            # Perform OCR on the preprocessed image
+            extracted_text = pytesseract.image_to_string(image)
+
+            # Postprocess the text
+            extracted_text = postprocess_text(extracted_text)
+
+            # Write the extracted text to the output file
+            txt_file.write(extracted_text + "\n")
+
+# Directory containing the PDF files
+pdf_directory = r"\Code"
+
+# List to store the futures
+futures = []
+
+# Create a ThreadPoolExecutor
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    # Loop through each file in the directory
+    for filename in os.listdir(pdf_directory):
+        if filename.endswith(".pdf"):
+            pdf_file = os.path.join(pdf_directory, filename)
+            output_text_file = os.path.splitext(pdf_file)[0] + ".txt"
+            future = executor.submit(extract_text_from_pdf, pdf_file, output_text_file)
+            futures.append(future)
+
+# Wait for all futures to complete
+concurrent.futures.wait(futures)
