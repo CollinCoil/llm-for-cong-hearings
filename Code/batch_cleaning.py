@@ -12,7 +12,7 @@ from typing import List
 def clean_text_file(filepath: str) -> None:
     """
     This function reads a text file, replaces all new line characters with spaces, 
-    and removes double spaces using regular expressions for 5 iterations. 
+    and removes double spaces using regular expressions. 
     The cleaned content is saved back to the same file.
 
     Args:
