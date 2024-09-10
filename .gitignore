@@ -1041,3 +1041,7 @@ Data/Witness References/witness_direct_references_111_floor_speeches.jsonl
 Data/Witness References/witness_direct_references_112_floor_speeches.jsonl
 Data/Witness References/witness_direct_references_113_floor_speeches.jsonl
 Data/Witness References/witness_direct_references_114_floor_speeches.jsonl
+Data/Zenodo/finetuning_text.txt
+Data/Zenodo/witness_names.csv
+Data/Zenodo/witness_corpus.jsonl
+Data/Zenodo/pretraining_text.txt
