@@ -11,9 +11,9 @@ from typing import List
 
 def clean_text_file(filepath: str) -> None:
     """
-    This function reads a text file, replaces all new line characters with spaces, 
-    replaces non-breaking spaces (\u00a0) with regular spaces, and removes double spaces using regular expressions. 
-    The cleaned content is saved back to the same file.
+    This function reads a text file, replaces UTF-8 encoded characters with plain text equivalents, 
+    replaces new line characters with spaces, replaces non-breaking spaces (\u00a0) with regular spaces, 
+    and removes double spaces using regular expressions. The cleaned content is saved back to the same file.
 
     Args:
         filepath: A string representing the path of the text file to be processed.
@@ -22,8 +22,24 @@ def clean_text_file(filepath: str) -> None:
     with open(filepath, 'r', encoding='utf-8') as file:
         content = file.read()
 
-    # Replace new line characters and non-breaking spaces with regular spaces
-    content = content.replace('\n', ' ').replace('\t', ' ').replace('\u00a0', ' ')
+    # Replace common UTF-8 characters with plain text equivalents
+    replacements = {
+        '\u00a0': ' ',  # Non-breaking space
+        '\u2019': "'",  # Right single quotation mark (apostrophe)
+        '\u2018': "'",  # Left single quotation mark
+        '\u201c': '"',  # Left double quotation mark
+        '\u201d': '"',  # Right double quotation mark
+        '\u2013': '-',  # En dash
+        '\u2014': '-',  # Em dash
+        '\u2010': '-',  # Hyphen
+    }
+
+    # Apply the replacements
+    for utf8_char, replacement in replacements.items():
+        content = content.replace(utf8_char, replacement)
+
+    # Replace new line characters and tabs with spaces
+    content = content.replace('\n', ' ').replace('\t', ' ')
 
     # Use regular expression to replace multiple spaces with a single space
     content = re.sub(r' {2,}', ' ', content)
@@ -35,8 +51,8 @@ def clean_text_file(filepath: str) -> None:
 def clean_txt_files_in_parallel(directory: str) -> None:
     """
     This function loops through all text files in a given directory and processes them in parallel.
-    Each text file is cleaned by replacing new line characters with spaces, reducing double spaces, 
-    and replacing non-breaking spaces with regular spaces.
+    Each text file is cleaned by replacing UTF-8 characters, new line characters with spaces, 
+    reducing double spaces, and replacing non-breaking spaces with regular spaces.
 
     Args:
         directory: A string representing the path of the directory containing .txt files.
@@ -52,4 +68,5 @@ def clean_txt_files_in_parallel(directory: str) -> None:
 # Example usage
 directory_path = r'/path/to/your/directory'
 clean_txt_files_in_parallel(directory_path)
+
 
