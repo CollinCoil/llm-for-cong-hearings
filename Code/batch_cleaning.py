@@ -12,7 +12,7 @@ from typing import List
 def clean_text_file(filepath: str) -> None:
     """
     This function reads a text file, replaces all new line characters with spaces, 
-    and removes double spaces using regular expressions. 
+    replaces non-breaking spaces (\u00a0) with regular spaces, and removes double spaces using regular expressions. 
     The cleaned content is saved back to the same file.
 
     Args:
@@ -22,9 +22,8 @@ def clean_text_file(filepath: str) -> None:
     with open(filepath, 'r', encoding='utf-8') as file:
         content = file.read()
 
-    # Replace new line characters with spaces
-    content = content.replace('\n', ' ').replace('\t', ' ')
-
+    # Replace new line characters and non-breaking spaces with regular spaces
+    content = content.replace('\n', ' ').replace('\t', ' ').replace('\u00a0', ' ')
 
     # Use regular expression to replace multiple spaces with a single space
     content = re.sub(r' {2,}', ' ', content)
@@ -36,8 +35,8 @@ def clean_text_file(filepath: str) -> None:
 def clean_txt_files_in_parallel(directory: str) -> None:
     """
     This function loops through all text files in a given directory and processes them in parallel.
-    Each text file is cleaned by replacing new line characters with spaces and reducing double spaces 
-    through several iterations.
+    Each text file is cleaned by replacing new line characters with spaces, reducing double spaces, 
+    and replacing non-breaking spaces with regular spaces.
 
     Args:
         directory: A string representing the path of the directory containing .txt files.
@@ -51,5 +50,6 @@ def clean_txt_files_in_parallel(directory: str) -> None:
         executor.map(clean_text_file, txt_files)
 
 # Example usage
-directory_path = '/path/to/your/directory'
+directory_path = r'/path/to/your/directory'
 clean_txt_files_in_parallel(directory_path)
+
