@@ -49,8 +49,9 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
       outfile.write("\n")
 
 # Example usage
-text_directory = "Data/text"
-# process_text(text_directory)
+text_directory = r"path_to_directory"
+output_filename = r"path_to_output_jsonl"
+process_text(text_directory, output_filename)
 
 
 
@@ -98,4 +99,4 @@ def process_floor_speeches(input_jsonl: str, output_jsonl: str) -> None:
             outfile.write('\n')
 
 
-process_floor_speeches(input_jsonl = "Data/relevant_speeches_114.jsonl", output_jsonl = "Data/relevant_speeches_114_sentences.jsonl")
+# process_floor_speeches(input_jsonl = "Data/relevant_speeches_114.jsonl", output_jsonl = "Data/relevant_speeches_114_sentences.jsonl")
