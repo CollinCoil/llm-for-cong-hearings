@@ -14,7 +14,7 @@ from nltk.tokenize import PunktSentenceTokenizer
 import json
 import string
 
-def process_text(text_directory: str, output_filename: str = "Data/output.jsonl") -> None:
+def process_text(text_directory: str, output_jsonl: str = "Data/output.jsonl") -> None:
   """
   Processes a directory of text files for analysis using NLTK PunktSentenceTokenizer.
 
@@ -40,18 +40,18 @@ def process_text(text_directory: str, output_filename: str = "Data/output.jsonl"
           id += 1
 
   # Create pandas dataframe
-  df = pd.DataFrame(sentences)
+  # df = pd.DataFrame(sentences)
 
   # Write dataframe as json lines
-  with open(output_filename, "w", encoding='utf-8') as outfile:
-    for row in df.itertuples(index=False):
-      json.dump(row, outfile)
-      outfile.write("\n")
+  with open(output_jsonl, 'w', encoding='utf-8') as outfile:
+        for sentence_entry in sentences:
+            json.dump(sentence_entry, outfile, ensure_ascii=False)
+            outfile.write('\n')
 
 # Example usage
 text_directory = r"path_to_directory"
-output_filename = r"path_to_output_jsonl"
-process_text(text_directory, output_filename)
+output_jsonl = r"path_to_output_jsonl"
+process_text(text_directory, output_jsonl)
 
 
 
