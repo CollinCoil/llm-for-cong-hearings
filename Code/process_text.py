@@ -2,8 +2,7 @@
 This function takes a directory of txt files and processes it for analysis. Specifically, it 
     (1) Reads all text files;
     (2) Split the text files by sentence;
-    (3) Save the sentences in a pandas dataframe with information about which document the sentence came from;
-    (4) Write the pandas dataframe as a json lines file.
+    (3) Save the sentences as a json lines file.
 
 This output is then used in generate_embeddings.py and witness_search.py. 
 """
