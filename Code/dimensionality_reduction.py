@@ -22,7 +22,7 @@ def create_tsne_embeddings(original_embeddings, perplexity:int = 50):
     tsne_embeddings = TSNE(n_components = 2, perplexity = perplexity).fit_transform(original_embeddings)
     return tsne_embeddings
 
-def create_umap_embeddings(original_embeddings):
+def create_umap_embeddings(original_embeddings, n_neighbors: int = 5, min_dist:float = 0.05):
     """
     Performs UMAP on a numpy array of embeddings. 
 
@@ -30,8 +30,8 @@ def create_umap_embeddings(original_embeddings):
         original_embeddings: a numpy array
     """
     mapping = UMAP(
-        n_neighbors=5,
-        min_dist=0.05,
+        n_neighbors=n_neighbors,
+        min_dist=min_dist,
         n_components=2,
         metric="euclidean"
     )
