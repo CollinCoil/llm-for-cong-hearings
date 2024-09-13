@@ -12,3 +12,4 @@ pytesseract==0.3.10
 pillow==10.2.0
 pyenchant==3.2.2
 scipy==1.12.0
+pyvis==0.3.2
