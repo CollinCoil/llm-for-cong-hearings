@@ -31,7 +31,7 @@ def generate_embeddings(model:str, corpus_file:str, output_file:str):
             data = json.loads(line)
 
             # Use the model to generate embeddings for the text
-            embedding = model.encode(data['Text'])
+            embedding = model.encode(data['text'])
 
             # Add the embedding to the list
             embeddings.append(embedding)
@@ -40,4 +40,4 @@ def generate_embeddings(model:str, corpus_file:str, output_file:str):
     np.save(output_file, embeddings)
 
 
-generate_embeddings(model = 'Models/finetuned_model', corpus_file = 'Data/lhic.jsonl', output_file = 'Data/lhic_embeddings.npy')
+generate_embeddings(model = 'Models/finetuned_model', corpus_file = 'Data/Zenodo/witness_corpus.jsonl', output_file = 'Data/wc_embeddings.npy')
