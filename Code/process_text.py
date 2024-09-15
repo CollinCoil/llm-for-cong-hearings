@@ -14,35 +14,59 @@ import json
 import string
 
 def process_text(text_directory: str, output_jsonl: str = "Data/output.jsonl") -> None:
-  """
-  Processes a directory of text files for analysis using NLTK PunktSentenceTokenizer.
+    """
+    Processes a directory of text files for analysis using NLTK PunktSentenceTokenizer.
 
-  Args:
-    text_directory: The directory containing the text files.
-    output_filename: The name of the output JSON lines file (default: "output.jsonl").
-  """
-  sentences = []
-  tokenizer = PunktSentenceTokenizer()  # Initialize sentence tokenizer
+    Args:
+        text_directory: The directory containing the text files.
+        output_filename: The name of the output JSON lines file (default: "output.jsonl").
+    """
+    sentences = []
+    tokenizer = PunktSentenceTokenizer()  # Initialize sentence tokenizer
+    id = 0  # Will help find each sentence in the semantic textual similarity matrix
 
-  id = 0 # will help find each sentence in the semantic textual similarity matrix
-  for filename in os.listdir(text_directory):
-    
-    if filename.endswith(".txt"):
-      filepath = os.path.join(text_directory, filename)
-      with open(filepath, "r", encoding='utf-8') as file:
-        text = file.read()
-      document_sentences = tokenizer.tokenize(text)  # Tokenize text using NLTK
-      for sentence in document_sentences:
-        sentence = sentence.strip()  # Remove leading/trailing whitespace
-        if sentence:  # Avoid empty sentences
-          sentences.append({"ID": id, "document": filename, "text": sentence})
-          id += 1
+    for filename in os.listdir(text_directory):
+        if filename.endswith(".txt"):
+            filepath = os.path.join(text_directory, filename)
+            with open(filepath, "r", encoding='utf-8') as file:
+                text = file.read()
 
-  # Create pandas dataframe
-  # df = pd.DataFrame(sentences)
+            document_sentences = tokenizer.tokenize(text)  # Tokenize text using NLTK
 
-  # Write dataframe as json lines
-  with open(output_jsonl, 'w', encoding='utf-8') as outfile:
+            # Initialize an empty list to store merged sentences
+            merged_sentences = []
+            buffer_sentence = ""
+
+            for sentence in document_sentences:
+                sentence = sentence.strip()  # Remove leading/trailing whitespace
+
+                # Split sentence into words to count them
+                words = sentence.split()
+
+                if buffer_sentence:
+                    # Merge the previous short sentence with the current one
+                    sentence = buffer_sentence + " " + sentence
+                    buffer_sentence = ""
+
+                # Check if sentence has fewer than 5 words
+                if len(words) < 5:
+                    # Save it in the buffer to merge with the next sentence
+                    buffer_sentence = sentence
+                else:
+                    merged_sentences.append(sentence)
+
+            # Add any leftover buffer sentence if it exists
+            if buffer_sentence:
+                merged_sentences.append(buffer_sentence)
+
+            # Add sentences to the output
+            for sentence in merged_sentences:
+                if sentence:  # Avoid empty sentences
+                    sentences.append({"ID": id, "document": filename, "text": sentence})
+                    id += 1
+
+    # Write the processed sentences to JSON lines
+    with open(output_jsonl, 'w', encoding='utf-8') as outfile:
         for sentence_entry in sentences:
             json.dump(sentence_entry, outfile, ensure_ascii=False)
             outfile.write('\n')
