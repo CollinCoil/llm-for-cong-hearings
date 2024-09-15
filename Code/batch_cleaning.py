@@ -22,7 +22,10 @@ def clean_text_file(filepath: str) -> None:
     with open(filepath, 'r', encoding='utf-8') as file:
         content = file.read()
 
-    # Replace common UTF-8 characters with plain text equivalents
+    # Replace new line characters and tabs with spaces.
+    content = content.replace('\n', ' ').replace('\t', ' ')
+
+    # Replace common UTF-8 characters with plain text equivalents. Also replace some common useless characters. 
     replacements = {
         '\u00a0': ' ',  # Non-breaking space
         '\u2019': "'",  # Right single quotation mark (apostrophe)
@@ -32,14 +35,21 @@ def clean_text_file(filepath: str) -> None:
         '\u2013': '-',  # En dash
         '\u2014': '-',  # Em dash
         '\u2010': '-',  # Hyphen
+        '\u2022': '', # Remove bullet point
+        '\u00B6': '', # Remove paragraph symbol
+        '\u2761': '', # Remove curved paragraph symbol
+        '\u00A7': '', # Remove section symbol 
+        '. . .': ' ', # Remove ...
+        '...': ' ',
+        '[': '',
+        ']': '',
+        '*': ''
     }
 
     # Apply the replacements
     for utf8_char, replacement in replacements.items():
         content = content.replace(utf8_char, replacement)
-
-    # Replace new line characters and tabs with spaces
-    content = content.replace('\n', ' ').replace('\t', ' ')
+    
 
     # Use regular expression to replace multiple spaces with a single space
     content = re.sub(r' {2,}', ' ', content)
