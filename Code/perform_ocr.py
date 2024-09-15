@@ -87,7 +87,7 @@ def extract_text_from_pdf(pdf_file: str, output_text_file: str):
             txt_file.write(extracted_text + "\n")
 
 # Directory containing the PDF files
-pdf_directory = r"\Code"
+pdf_directory = r"Data\Judicial\Broken"
 
 # List to store the futures
 futures = []
