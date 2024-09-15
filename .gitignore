@@ -1045,3 +1045,5 @@ Data/Zenodo/finetuning_text.txt
 Data/Zenodo/witness_names.csv
 Data/Zenodo/witness_corpus.jsonl
 Data/Zenodo/pretraining_text.txt
+Code/unzip.py
+Code/__pycache__/dimensionality_reduction.cpython-312.pyc
