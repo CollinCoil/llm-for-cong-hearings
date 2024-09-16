@@ -39,6 +39,7 @@ def clean_text_file(filepath: str) -> None:
         '\u00B6': '', # Remove paragraph symbol
         '\u2761': '', # Remove curved paragraph symbol
         '\u00A7': '', # Remove section symbol 
+        '\u2026': '', # Remove ...
         '. . .': ' ', # Remove ...
         '...': ' ',
         '[': '',
