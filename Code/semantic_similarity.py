@@ -8,15 +8,14 @@ This semantic similarity file can then be used to (1) manually review similar se
 
 import numpy as np
 import json
-from scipy.spatial.distance import cdist
-import heapq
+from sklearn.metrics.pairwise import cosine_similarity
 
-def get_top_similar_sentences(first_embeddings_path: str, first_corpus_jsonl: str, 
-                              second_embeddings_path: str, second_corpus_jsonl: str, 
-                              output_path: str, top_n: int = 30):
+def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
+                          second_embeddings_path, second_corpus_jsonl,
+                          output_path, top_n=50):
     """
     For each document in the first corpus, find the top N most similar sentences
-    in the second corpus using cosine similarity.
+    between the document's sentences and all sentences in the second corpus using cosine similarity.
 
     Args:
         first_embeddings_path (str): Path to the .npy file containing sentence embeddings for the first corpus.
@@ -24,90 +23,65 @@ def get_top_similar_sentences(first_embeddings_path: str, first_corpus_jsonl: st
         second_embeddings_path (str): Path to the .npy file containing sentence embeddings for the second corpus.
         second_corpus_jsonl (str): Path to the JSONL file with sentence metadata for the second corpus.
         output_path (str): Path to save the output JSONL file.
-        top_n (int): Number of top similar sentences to extract for each document.
+        top_n (int): Number of top similar sentence pairs to extract for each document.
     """
 
-    # Load embeddings
-    first_embeddings = np.load(first_embeddings_path).astype(np.float32)
-    second_embeddings = np.load(second_embeddings_path).astype(np.float32)
+    # Load the embeddings
+    first_embeddings = np.load(first_embeddings_path)
+    second_embeddings = np.load(second_embeddings_path)
 
-    # Load corpus metadata
-    first_corpus = [json.loads(line) for line in open(first_corpus_jsonl, 'r', encoding='utf-8')]
-    second_corpus = [json.loads(line) for line in open(second_corpus_jsonl, 'r', encoding='utf-8')]
+    # Load the metadata
+    with open(first_corpus_jsonl, encoding='utf-8') as f:
+        first_metadata = [json.loads(line) for line in f]
 
-    second_sentences = {entry["ID"]: entry for entry in second_corpus}
+    with open(second_corpus_jsonl, encoding='utf-8') as f:
+        second_metadata = [json.loads(line) for line in f]
 
-    # Prepare output file
-    with open(output_path, 'w', encoding='utf-8') as outfile:
+    # Open the output file
+    with open(output_path, 'w', encoding='utf-8') as f:
+        # Group the sentences by document in the first corpus
+        documents = {}
+        for item in first_metadata:
+            doc_id = item['document']
+            if doc_id not in documents:
+                documents[doc_id] = []
+            documents[doc_id].append(item)
 
-        # Process each document in the first corpus
-        current_doc = None
-        doc_sentences = []
-        doc_embeddings = []
+        # For each document in the first corpus
+        for doc_id, sentences in documents.items():
+            # Get the sentence IDs for this document
+            sentence_ids = [sentence['ID'] for sentence in sentences]
 
-        for i, entry in enumerate(first_corpus):
-            doc_id = entry['document']
-            
-            # Collect sentences for the current document
-            if current_doc is None or doc_id == current_doc:
-                doc_sentences.append(entry)
-                doc_embeddings.append(first_embeddings[i])
-                current_doc = doc_id
-            else:
-                # Process the previous document once it's finished collecting
-                doc_embeddings = np.array(doc_embeddings)
+            # Slice the embeddings for this document
+            doc_embeddings = first_embeddings[sentence_ids]
 
-                # Calculate similarity for each sentence in the document
-                similarities = 1 - cdist(doc_embeddings, second_embeddings, metric='cosine')
+            # Calculate the similarity between this document's sentences and all sentences in the second corpus
+            similarities = cosine_similarity(doc_embeddings, second_embeddings)
 
-                # Find top N similarities for each sentence in the document
-                for idx, sim_vector in enumerate(similarities):
-                    top_indices = heapq.nlargest(top_n, range(len(sim_vector)), key=sim_vector.__getitem__)
+            # Find the top-N similarities for this document
+            top_similarities = []
+            for i, row in enumerate(similarities):
+                # For each sentence in the document, find the top N similarities
+                top_indices = np.argsort(row)[-top_n:]
+                for index in top_indices:
+                    top_similarities.append((i, index, row[index]))
 
-                    for j in top_indices:
-                        top_entry = {
-                            "witness_document": doc_sentences[idx]['document'],
-                            "witness_ID": doc_sentences[idx]['ID'],
-                            "witness_text": doc_sentences[idx]['text'],
-                            "lhic_document": second_sentences[j]['document'],
-                            "lhic_ID": second_sentences[j]['ID'],
-                            "lhic_text": second_sentences[j]['text'],
-                            "similarity_score": sim_vector[j]
-                        }
-                        outfile.write(json.dumps(top_entry) + '\n')
+            # Sort by similarity score (descending) and take the top-N overall pairs for the document
+            top_similarities = sorted(top_similarities, key=lambda x: x[2], reverse=True)[:top_n]
 
-                # Reset for the next document
-                current_doc = doc_id
-                doc_sentences = [entry]
-                doc_embeddings = [first_embeddings[i]]
+            # Write the metadata and similarity score to the output file
+            for first_idx, second_idx, sim_score in top_similarities:
+                f.write(json.dumps({
+                    'first_metadata': first_metadata[sentence_ids[first_idx]],
+                    'second_metadata': second_metadata[second_idx],
+                    'similarity': float(sim_score)
+                }, ensure_ascii=False) + '\n')
 
-        # Handle the last document
-        if doc_sentences:
-            doc_embeddings = np.array(doc_embeddings)
-            similarities = 1 - cdist(doc_embeddings, second_embeddings, metric='cosine')
 
-            for idx, sim_vector in enumerate(similarities):
-                top_indices = heapq.nlargest(top_n, range(len(sim_vector)), key=sim_vector.__getitem__)
-
-                for j in top_indices:
-                    top_entry = {
-                        "witness_document": doc_sentences[idx]['document'],
-                        "witness_ID": doc_sentences[idx]['ID'],
-                        "witness_text": doc_sentences[idx]['text'],
-                        "lhic_document": second_sentences[j]['document'],
-                        "lhic_ID": second_sentences[j]['ID'],
-                        "lhic_text": second_sentences[j]['text'],
-                        "similarity_score": sim_vector[j]
-                    }
-                    outfile.write(json.dumps(top_entry) + '\n')
-
-    print(f"Top {top_n} similar sentences saved to {output_path}")
-
-# Example usage
-get_top_similar_sentences(
-    "Data/wc_embeddings.npy", 
-    "Data/Zenodo/witness_corpus.jsonl", 
-    "Data/lhic_embeddings.npy", 
-    "Data/Zenodo/lhic.jsonl", 
-    "Data/top_similar_sentences.jsonl"
+calculate_similarity(
+    "Data/wc_embeddings.npy",
+    "Data/Zenodo/witness_corpus.jsonl",
+    "Data/lhic_embeddings.npy",
+    "Data/Zenodo/lhi_corpus.jsonl",
+    "Data/sentence_similarities.jsonl"
 )
