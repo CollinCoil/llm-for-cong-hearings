@@ -22,7 +22,7 @@ def read_triplet_data(file_path):
     triplets = []
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
-            anchor, positive, negative = line.strip().split('\t')
+            anchor, positive, negative = line.strip().split('|')
             triplets.append((anchor, positive, negative))
     return triplets
 
