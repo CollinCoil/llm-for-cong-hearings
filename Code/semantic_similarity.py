@@ -8,7 +8,8 @@ This semantic similarity file can then be used to (1) manually review similar se
 
 import numpy as np
 import json
-from sklearn.metrics.pairwise import cosine_similarity
+import torch
+
 
 def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
                           second_embeddings_path, second_corpus_jsonl,
@@ -26,9 +27,13 @@ def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
         top_n (int): Number of top similar sentence pairs to extract for each document.
     """
 
-    # Load the embeddings
-    first_embeddings = np.load(first_embeddings_path)
-    second_embeddings = np.load(second_embeddings_path)
+    # Check if GPU is available and set device accordingly
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Using device: {device}")
+
+    # Load the embeddings and transfer to the appropriate device
+    first_embeddings = torch.tensor(np.load(first_embeddings_path)).to(device)
+    second_embeddings = torch.tensor(np.load(second_embeddings_path)).to(device)
 
     # Load the metadata
     with open(first_corpus_jsonl, encoding='utf-8') as f:
@@ -49,27 +54,23 @@ def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
 
         # For each document in the first corpus
         for doc_id, sentences in documents.items():
-            # Get the sentence IDs for this document
             sentence_ids = [sentence['ID'] for sentence in sentences]
 
             # Slice the embeddings for this document
             doc_embeddings = first_embeddings[sentence_ids]
 
-            # Calculate the similarity between this document's sentences and all sentences in the second corpus
-            similarities = cosine_similarity(doc_embeddings, second_embeddings)
+            # Calculate the similarity using PyTorch's matrix multiplication
+            similarities = torch.matmul(doc_embeddings, second_embeddings.T)
 
-            # Find the top-N similarities for this document
+            # Find the top-N similarities
             top_similarities = []
             for i, row in enumerate(similarities):
-                # For each sentence in the document, find the top N similarities
-                top_indices = np.argsort(row)[-top_n:]
+                top_indices = torch.topk(row, top_n).indices
                 for index in top_indices:
-                    top_similarities.append((i, index, row[index]))
+                    top_similarities.append((i, index.item(), row[index].item()))
 
-            # Sort by similarity score (descending) and take the top-N overall pairs for the document
+            # Sort and write the results
             top_similarities = sorted(top_similarities, key=lambda x: x[2], reverse=True)[:top_n]
-
-            # Write the metadata and similarity score to the output file
             for first_idx, second_idx, sim_score in top_similarities:
                 f.write(json.dumps({
                     'first_metadata': first_metadata[sentence_ids[first_idx]],
@@ -77,11 +78,10 @@ def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
                     'similarity': float(sim_score)
                 }, ensure_ascii=False) + '\n')
 
-
 calculate_similarity(
-    "Data/wc_embeddings.npy",
-    "Data/Zenodo/witness_corpus.jsonl",
-    "Data/lhic_embeddings.npy",
-    "Data/Zenodo/lhi_corpus.jsonl",
-    "Data/sentence_similarities.jsonl"
+    r"Data\Zenodo\wc_embeddings.npy",
+    r"Data\Zenodo\witness_corpus.jsonl",
+    r"Data\Zenodo\lhic_embeddings.npy",
+    r"Data\Zenodo\lhi_corpus.jsonl",
+    r"Data\Zenodo\sentence_similarities.jsonl"
 )

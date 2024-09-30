@@ -1047,3 +1047,7 @@ Data/Zenodo/witness_corpus.jsonl
 Data/Zenodo/pretraining_text.txt
 Code/__pycache__/dimensionality_reduction.cpython-312.pyc
 Code/merge_jsonl.py
+Data/Zenodo/witness_direct_references.jsonl
+Data/Zenodo/sentence_similarities.jsonl
+Data/Zenodo/wc_embeddings.npy
+Data/Zenodo/lhi_corpus.jsonl
