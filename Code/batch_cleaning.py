@@ -27,6 +27,10 @@ def clean_text_file(filepath: str) -> None:
 
     # Replace common UTF-8 characters with plain text equivalents. Also replace some common useless characters. 
     replacements = {
+        'Mr.': 'Mr',
+        'Mrs.': 'Mrs',
+        'Ms.': 'Ms',
+        'Dr.': 'Dr',
         '\u00a0': ' ',  # Non-breaking space
         '\u2019': "'",  # Right single quotation mark (apostrophe)
         '\u2018': "'",  # Left single quotation mark
