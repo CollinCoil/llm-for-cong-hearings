@@ -6,6 +6,7 @@ for use in semantic_similarity.py.
 
 import json
 import numpy as np
+import torch
 from sentence_transformers import SentenceTransformer
 
 def generate_embeddings(model:str, corpus_file:str, output_file:str):
@@ -18,8 +19,13 @@ def generate_embeddings(model:str, corpus_file:str, output_file:str):
         corpus_file: a string of the json lines file location containing the text for embeddings
         output_file: a string of the file name and location that the output embeddings should be written
     """
+
+    # Check if a GPU is available
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    print(f"Using device: {device}")
+
     # Load the fine-tuned model
-    model = SentenceTransformer('Models/finetuned_model')
+    model = SentenceTransformer('Models/finetuned_model', device=device)
 
     # Initialize an empty list to store embeddings
     embeddings = []
@@ -31,7 +37,7 @@ def generate_embeddings(model:str, corpus_file:str, output_file:str):
             data = json.loads(line)
 
             # Use the model to generate embeddings for the text
-            embedding = model.encode(data['text'])
+            embedding = model.encode(data['text'], device=device)
 
             # Add the embedding to the list
             embeddings.append(embedding)
@@ -40,4 +46,4 @@ def generate_embeddings(model:str, corpus_file:str, output_file:str):
     np.save(output_file, embeddings)
 
 
-generate_embeddings(model = 'Models/finetuned_model', corpus_file = 'Data/Zenodo/witness_corpus.jsonl', output_file = 'Data/wc_embeddings.npy')
+generate_embeddings(model = r'path/to/model', corpus_file = r'path/to/corpus', output_file = r'output/file/name')
