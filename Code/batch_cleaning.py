@@ -6,14 +6,13 @@ on directories of txt files, removing these errors. This function prepares text 
 
 import os
 import re
+import json
 from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 def clean_text_file(filepath: str) -> None:
     """
-    This function reads a text file, replaces UTF-8 encoded characters with plain text equivalents, 
-    replaces new line characters with spaces, replaces non-breaking spaces (\u00a0) with regular spaces, 
-    and removes double spaces using regular expressions. The cleaned content is saved back to the same file.
+    This function reads a text file and cleans many problematic elements in text. The cleaned content is saved back to the same file.
 
     Args:
         filepath: A string representing the path of the text file to be processed.
@@ -83,5 +82,49 @@ def clean_txt_files_in_parallel(directory: str) -> None:
 # Example usage
 directory_path = r'/path/to/your/directory'
 clean_txt_files_in_parallel(directory_path)
+
+
+
+def clean_and_reindex_jsonl(input_file: str, output_file: str, filter_words: list, min_word_count: int = 0) -> None:
+    """
+    This function reads a JSON lines file and fixes many issues impacting the semantic similarity calculation. It eliminates small sentences from the dataset, 
+    and it removes boilerplate sentences (e.g., "Thank you.") by eliminating sentences with containing common words in those sentences. It outputs a new, cleaned 
+    and reindexed JSONL file. 
+
+    Args:
+        input_file: A string representing the path of the JSON lines file to be processed.
+        output_file: A string representing the path of the JSON lines file to be output.
+        filter_words: A list of strings containing the words appearing in boilerplate sentences.
+        min_word_count: An integer specifying the minimum number of words that should appear in a sentence. 
+    """
+
+    cleaned_data = []
+    
+    # Convert filter words to lowercase for case-insensitive comparison
+    filter_words = [word.lower() for word in filter_words]
+    
+    # Read the input JSON Lines file
+    with open(input_file, 'r', encoding = "utf-8") as infile:
+        for line in infile:
+            entry = json.loads(line)
+            text = entry['text'].lower()
+
+            # Filter based on words and minimum word count
+            if (not any(word in text for word in filter_words)) and (len(text.split()) >= min_word_count):
+                cleaned_data.append(entry)
+    
+    # Reindex the IDs
+    for idx, entry in enumerate(cleaned_data, start=1):
+        entry['ID'] = idx
+
+    # Write the cleaned data to a new JSON Lines file
+    with open(output_file, 'w', encoding = "utf-8") as outfile:
+        for entry in cleaned_data:
+            outfile.write(json.dumps(entry) + '\n')
+
+# Example usage
+filter_words = ["thank", "time", "discussion", "opportunity"]
+min_word_count = 8
+clean_and_reindex_jsonl(r'Data\Zenodo\lhi_corpus.jsonl', r'Data\Zenodo\lhi_corpus_clean.jsonl', filter_words, min_word_count)
 
 
