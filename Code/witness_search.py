@@ -50,7 +50,7 @@ def process_witness(witness, lines):
             matches.append(result)
     return matches
 
-def witness_search_parallel(witness_list, sentences_file, output_file="Data/output.jsonl", num_workers=4):
+def witness_search_parallel(witness_list, sentences_file, output_file="Data/output.jsonl", num_workers=3):
     """
     Parallelized search for witness names in a JSON Lines file of sentences.
     
@@ -78,10 +78,10 @@ def witness_search_parallel(witness_list, sentences_file, output_file="Data/outp
             out.write('\n')
 
 # Example usage
-witness_data = pd.read_csv("Data/witness_names.csv")
+witness_data = pd.read_csv(r"Data\Zenodo\witness_names.csv")
 witness_list = witness_data["Witness"]
-sentences_file = "Data/relevant_speeches_114_sentences.jsonl"  
-output_file = "Data/Witness References/witness_direct_references_114_floor_speeches.jsonl"
+sentences_file = r"Data\Zenodo\lhi_corpus.jsonl"  
+output_file = r"Data\Zenodo\witness_direct_references.jsonl"
 
 if __name__ == '__main__':
     witness_search_parallel(witness_list, sentences_file, output_file)
