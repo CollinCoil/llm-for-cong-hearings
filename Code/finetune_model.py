@@ -6,7 +6,7 @@ fine tuning corpora generated from using the generate_trainig_corpora.py file.
 
 import torch
 from sentence_transformers import SentenceTransformer, InputExample
-from sentence_transformers import losses
+from sentence_transformers.losses import TripletLoss, TripletDistanceMetric
 from torch.utils.data import DataLoader
 
 
@@ -59,14 +59,18 @@ def fine_tune_model(model_path: str, data_path: str):
     # Create a DataLoader for the examples
     train_dataloader = DataLoader(examples, shuffle=True, batch_size=128, num_workers=16)
 
-    # Define the loss function
-    loss_function = losses.TripletLoss(model=model)
+    # Define the loss function with cosine distance
+    loss_function = TripletLoss(
+        model=model,
+        distance_metric=TripletDistanceMetric.CosineSimilarity,
+        triplet_margin=0.3  # Use a smaller margin for cosine distance
+    )
 
     # Fine-tune the model on the GPU
     model.fit(train_objectives=[(train_dataloader, loss_function)],
-              epochs=2,
+              epochs=3,
               scheduler="warmuplinear",
-              optimizer_params={"lr": 2e-5},
+              optimizer_params={"lr": 5e-5},
               show_progress_bar=True,
               output_path="Models/finetuned_model")
 
