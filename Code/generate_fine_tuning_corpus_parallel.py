@@ -29,6 +29,11 @@ def process_file(file_path):
         text = f.read()
         sents = sent_tokenize(text)
         sents = [clean_sentence(sent) for sent in sents if len(word_tokenize(sent)) > 8]
+
+        # Filter out documents with fewer than 5 sentences
+        if len(sents) < 5:
+            return []  # Return an empty list if fewer than 5 sentences
+
         return [(sent, os.path.basename(file_path)) for sent in sents]
 
 
@@ -41,14 +46,31 @@ def generate_triplet(sentences, sentence_dict):
     anchor_list = sentence_dict[anchor_file]
     anchor_index = anchor_list.index(anchor)
     
-    # Select a positive match
+    # Select a positive match (adjacent sentence)
     pos_index = choice([index for index in [anchor_index - 1, anchor_index + 1] if 0 <= index < len(anchor_list)])
     positive = anchor_list[pos_index]
+
+    # Select a negative match from two ranges
+    negative_candidates = []
     
-    # Select a negative match
-    negative, negative_file = choice(sentences)
-    while negative == anchor or negative == positive or negative_file == anchor_file:
-        negative, negative_file = choice(sentences)
+    # Negative range: 3 to 5 sentences before the anchor
+    for offset in range(2, 6):
+        neg_index = anchor_index - offset
+        if 0 <= neg_index < len(anchor_list):
+            neg_sentence = anchor_list[neg_index]
+            if neg_sentence != anchor and neg_sentence != positive:
+                negative_candidates.append(neg_sentence)
+
+    # Negative range: 2 to 5 sentences after the anchor
+    for offset in range(2, 6):
+        neg_index = anchor_index + offset
+        if 0 <= neg_index < len(anchor_list):
+            neg_sentence = anchor_list[neg_index]
+            if neg_sentence != anchor and neg_sentence != positive:
+                negative_candidates.append(neg_sentence)
+
+    # If there are valid negatives, choose one randomly
+    negative = choice(negative_candidates) if negative_candidates else None
     
     return (anchor, positive, negative)
 
@@ -97,4 +119,5 @@ def generate_finetuning_corpus(directory_path: str, output_path: str = "output.j
 
 
 
-generate_finetuning_corpus(directory_path = '../../Fine Tuning Text', output_path = 'Data/finetuning_text.npy', corpus_size = 200000)
+
+generate_finetuning_corpus(directory_path = r'path\to\finetuning\directory', output_path = r'output\file\name', corpus_size = 500000)
