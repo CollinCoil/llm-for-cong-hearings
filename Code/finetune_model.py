@@ -62,7 +62,7 @@ def fine_tune_model(model_path: str, data_path: str):
     # Define the loss function with cosine distance
     loss_function = TripletLoss(
         model=model,
-        distance_metric=TripletDistanceMetric.CosineSimilarity,
+        distance_metric=TripletDistanceMetric.COSINE,
         triplet_margin=0.3  # Use a smaller margin for cosine distance
     )
 
