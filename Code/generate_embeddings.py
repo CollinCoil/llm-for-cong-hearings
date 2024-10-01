@@ -25,22 +25,26 @@ def generate_embeddings(model:str, corpus_file:str, output_file:str):
     print(f"Using device: {device}")
 
     # Load the fine-tuned model
-    model = SentenceTransformer('Models/finetuned_model', device=device)
+    model = SentenceTransformer(model, device=device)
 
-    # Initialize an empty list to store embeddings
+    # Initialize an empty list to store the sentences and their embeddings
+    sentences = []
     embeddings = []
 
-    # Open the corpus file
+    batch_size = 64
+    # Read the corpus file
     with open(corpus_file, 'r', encoding='utf-8') as f:
         for line in f:
-            # Load the json data from the line
+            # Load the json data from the line and append the sentence to the list
             data = json.loads(line)
+            sentences.append(data['text'])
 
-            # Use the model to generate embeddings for the text
-            embedding = model.encode(data['text'], device=device)
-
-            # Add the embedding to the list
-            embeddings.append(embedding)
+    # Encode the sentences in batches to avoid memory issues
+    for i in range(0, len(sentences), batch_size):
+        batch_sentences = sentences[i:i+batch_size]
+        # Generate embeddings for the batch
+        batch_embeddings = model.encode(batch_sentences, batch_size=batch_size)
+        embeddings.extend(batch_embeddings)
 
     # Save the embeddings as a numpy array
     np.save(output_file, embeddings)
