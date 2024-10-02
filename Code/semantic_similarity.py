@@ -12,11 +12,11 @@ import torch
 
 
 def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
-                          second_embeddings_path, second_corpus_jsonl,
-                          output_path, top_n=50):
+                         second_embeddings_path, second_corpus_jsonl,
+                         output_path, top_n=5):
     """
-    For each document in the first corpus, find the top N most similar sentences
-    between the document's sentences and all sentences in the second corpus using cosine similarity.
+    For each sentence in the first corpus, find the top N most similar sentences
+    between the sentence and all sentences in the second corpus using cosine similarity.
 
     Args:
         first_embeddings_path (str): Path to the .npy file containing sentence embeddings for the first corpus.
@@ -24,7 +24,7 @@ def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
         second_embeddings_path (str): Path to the .npy file containing sentence embeddings for the second corpus.
         second_corpus_jsonl (str): Path to the JSONL file with sentence metadata for the second corpus.
         output_path (str): Path to save the output JSONL file.
-        top_n (int): Number of top similar sentence pairs to extract for each document.
+        top_n (int): Number of top similar sentence pairs to extract for each sentence in the first corpus.
     """
 
     # Check if GPU is available and set device accordingly
@@ -44,44 +44,30 @@ def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
 
     # Open the output file
     with open(output_path, 'w', encoding='utf-8') as f:
-        # Group the sentences by document in the first corpus
-        documents = {}
-        for item in first_metadata:
-            doc_id = item['document']
-            if doc_id not in documents:
-                documents[doc_id] = []
-            documents[doc_id].append(item)
 
-        # For each document in the first corpus
-        for doc_id, sentences in documents.items():
-            sentence_ids = [sentence['ID'] for sentence in sentences]
+        # For each sentence in the first corpus
+        for i, sentence in enumerate(first_metadata):
+            # Get the embedding for the current sentence
+            sentence_embedding = first_embeddings[i].unsqueeze(0)
 
-            # Slice the embeddings for this document
-            doc_embeddings = first_embeddings[sentence_ids]
+            # Calculate similarity between the current sentence and all sentences in the second corpus
+            similarities = torch.matmul(sentence_embedding, second_embeddings.T).squeeze(0)
 
-            # Calculate the similarity using PyTorch's matrix multiplication
-            similarities = torch.matmul(doc_embeddings, second_embeddings.T)
+            # Find the top-N similar sentences
+            top_indices = torch.topk(similarities, top_n).indices
 
-            # Find the top-N similarities
-            top_similarities = []
-            for i, row in enumerate(similarities):
-                top_indices = torch.topk(row, top_n).indices
-                for index in top_indices:
-                    top_similarities.append((i, index.item(), row[index].item()))
-
-            # Sort and write the results
-            top_similarities = sorted(top_similarities, key=lambda x: x[2], reverse=True)[:top_n]
-            for first_idx, second_idx, sim_score in top_similarities:
+            # Write the top-N results to the output file
+            for index in top_indices:
                 f.write(json.dumps({
-                    'first_metadata': first_metadata[sentence_ids[first_idx]],
-                    'second_metadata': second_metadata[second_idx],
-                    'similarity': float(sim_score)
+                    'first_metadata': sentence,
+                    'second_metadata': second_metadata[index.item()],
+                    'similarity': float(similarities[index].item())
                 }, ensure_ascii=False) + '\n')
 
 calculate_similarity(
     r"Data\Zenodo\wc_embeddings.npy",
     r"Data\Zenodo\witness_corpus.jsonl",
     r"Data\Zenodo\lhic_embeddings.npy",
-    r"Data\Zenodo\lhi_corpus.jsonl",
+    r"Data\Zenodo\legislative_history_impact_corpus.jsonl",
     r"Data\Zenodo\sentence_similarities.jsonl"
 )
