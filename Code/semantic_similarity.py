@@ -1,5 +1,5 @@
 """
-This function calculates the cosine similarity between all embeddings in the witness corpus and the LHIC. It does this
+These functios calculate the cosine similarity between all embeddings in the witness corpus and the LHIC. It does this
 by calculating the cosine similarity between each sentence. The output of this function is a JSON Lines file that 
 contains the metadata from the Witness Corpus, metadata from the LHIC, and the sentence similarity score.  
 This semantic similarity file can then be used to (1) manually review similar sentences for "hits" and 
@@ -11,7 +11,7 @@ import json
 import torch
 
 
-def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
+def calculate_similarity_by_top_n(first_embeddings_path, first_corpus_jsonl,
                          second_embeddings_path, second_corpus_jsonl,
                          output_path, top_n=5):
     """
@@ -64,10 +64,71 @@ def calculate_similarity(first_embeddings_path, first_corpus_jsonl,
                     'similarity': float(similarities[index].item())
                 }, ensure_ascii=False) + '\n')
 
-calculate_similarity(
+calculate_similarity_by_top_n(
     r"Data\Zenodo\wc_embeddings.npy",
     r"Data\Zenodo\witness_corpus.jsonl",
     r"Data\Zenodo\lhic_embeddings.npy",
     r"Data\Zenodo\legislative_history_impact_corpus.jsonl",
-    r"Data\Zenodo\sentence_similarities.jsonl"
+    r"Data\Zenodo\sentence_similarities_by_top_n.jsonl"
+)
+
+
+def calculate_similarity_by_threshold(first_embeddings_path, first_corpus_jsonl,
+                         second_embeddings_path, second_corpus_jsonl,
+                         output_path, similarity_threshold=0.95):
+    """
+    For each sentence in the first corpus, find all sentence pairs between the sentence and the second corpus
+    where the cosine similarity exceeds a specified threshold.
+
+    Args:
+        first_embeddings_path (str): Path to the .npy file containing sentence embeddings for the first corpus.
+        first_corpus_jsonl (str): Path to the JSONL file with sentence metadata for the first corpus.
+        second_embeddings_path (str): Path to the .npy file containing sentence embeddings for the second corpus.
+        second_corpus_jsonl (str): Path to the JSONL file with sentence metadata for the second corpus.
+        output_path (str): Path to save the output JSONL file.
+        similarity_threshold (float): Similarity threshold to consider when selecting sentence pairs.
+    """
+
+    # Check if GPU is available and set device accordingly
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Using device: {device}")
+
+    # Load the embeddings and transfer to the appropriate device
+    first_embeddings = torch.tensor(np.load(first_embeddings_path)).to(device)
+    second_embeddings = torch.tensor(np.load(second_embeddings_path)).to(device)
+
+    # Load the metadata
+    with open(first_corpus_jsonl, encoding='utf-8') as f:
+        first_metadata = [json.loads(line) for line in f]
+
+    with open(second_corpus_jsonl, encoding='utf-8') as f:
+        second_metadata = [json.loads(line) for line in f]
+
+    # Open the output file
+    with open(output_path, 'w', encoding='utf-8') as f:
+
+        # For each sentence in the first corpus
+        for i, sentence in enumerate(first_metadata):
+            # Get the embedding for the current sentence
+            sentence_embedding = first_embeddings[i].unsqueeze(0)
+
+            # Calculate similarity between the current sentence and all sentences in the second corpus
+            similarities = torch.matmul(sentence_embedding, second_embeddings.T).squeeze(0)
+
+            # Find sentence pairs where similarity exceeds the threshold
+            for j, sim_score in enumerate(similarities):
+                if sim_score >= similarity_threshold:
+                    # Write the result to the output file if the similarity exceeds the threshold
+                    f.write(json.dumps({
+                        'first_metadata': sentence,
+                        'second_metadata': second_metadata[j],
+                        'similarity': float(sim_score.item())
+                    }, ensure_ascii=False) + '\n')
+
+calculate_similarity_by_threshold(
+    r"Data\Zenodo\wc_embeddings.npy",
+    r"Data\Zenodo\witness_corpus.jsonl",
+    r"Data\Zenodo\lhic_embeddings.npy",
+    r"Data\Zenodo\legislative_history_impact_corpus.jsonl",
+    r"Data\Zenodo\sentence_similarities_by_threshold.jsonl"
 )
