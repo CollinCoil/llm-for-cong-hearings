@@ -81,7 +81,7 @@ def clean_txt_files_in_parallel(directory: str) -> None:
 
 # Example usage
 directory_path = r'/path/to/your/directory'
-clean_txt_files_in_parallel(directory_path)
+# clean_txt_files_in_parallel(directory_path)
 
 
 
@@ -123,8 +123,8 @@ def clean_and_reindex_jsonl(input_file: str, output_file: str, filter_words: lis
             outfile.write(json.dumps(entry) + '\n')
 
 # Example usage
-filter_words = ["thank", "time", "discussion", "opportunity"]
+filter_words = ["thank", "time", "discussion", "opportunity", "chair"]
 min_word_count = 8
-clean_and_reindex_jsonl(r'Data\Zenodo\lhi_corpus.jsonl', r'Data\Zenodo\lhi_corpus_clean.jsonl', filter_words, min_word_count)
+clean_and_reindex_jsonl(r'input\jsonl\path', r'output\jsonl\path', filter_words, min_word_count)
 
 
