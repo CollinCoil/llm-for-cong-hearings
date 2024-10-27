@@ -23,6 +23,9 @@ pip install -v -e .
 ```
 This command will install all the required packages listed in the requirements.txt file.
 
+# Usage
+We recommend creating a python notebook and importing the necessary functions from across the repository. That will prevent the need to toggle in between individual files when executing code. 
+
 # Data
 The data for this project is accessible on Zenodo. The link will be published here once it is available. 
 
