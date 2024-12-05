@@ -78,10 +78,10 @@ def witness_search_parallel(witness_list, sentences_file, output_file="Data/outp
             out.write('\n')
 
 # Example usage
-witness_data = pd.read_csv(r"path/to/csv_with_witness_names")
-witness_list = witness_data["Witness"]
-sentences_file = r"path/to/corpus"  
-output_file = r"output/jsonl/name"
+# witness_data = pd.read_csv(r"path/to/csv_with_witness_names")
+# witness_list = witness_data["Witness"]
+# sentences_file = r"path/to/corpus"  
+# output_file = r"output/jsonl/name"
 
-if __name__ == '__main__':
-    witness_search_parallel(witness_list, sentences_file, output_file)
+# if __name__ == '__main__':
+#     witness_search_parallel(witness_list, sentences_file, output_file)

@@ -1,3 +1,7 @@
+"""
+This function unzips files with long paths. It puts the output files in a speficied directory. 
+"""
+
 import os
 import zipfile
 import shutil
@@ -35,6 +39,6 @@ def unzip_directory(zip_file_path, extract_to_dir):
         print(f"Successfully extracted {zip_file_path} to {extract_to_dir}")
 
 # Example usage
-zip_file_path = r'path/to/zip'
-extract_to_dir = r'output/directory'
-unzip_directory(zip_file_path, extract_to_dir)
+# zip_file_path = r'path/to/zip'
+# extract_to_dir = r'output/directory'
+# unzip_directory(zip_file_path, extract_to_dir)

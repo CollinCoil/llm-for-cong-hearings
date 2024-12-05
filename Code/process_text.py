@@ -71,10 +71,10 @@ def process_text(text_directory: str, output_jsonl: str = "Data/output.jsonl") -
             json.dump(sentence_entry, outfile, ensure_ascii=False)
             outfile.write('\n')
 
-# Example usage
-text_directory = r"path_to_directory"
-output_jsonl = r"path_to_output_jsonl"
-process_text(text_directory, output_jsonl)
+# Example Usage
+# text_directory = r"path\to\directory"
+# output_jsonl = r"path\to\output"
+# process_text(text_directory, output_jsonl)
 
 
 
@@ -121,5 +121,5 @@ def process_floor_speeches(input_jsonl: str, output_jsonl: str) -> None:
             json.dump(sentence_entry, outfile, ensure_ascii=False)
             outfile.write('\n')
 
-
+# Example Usage
 # process_floor_speeches(input_jsonl = "Data/relevant_speeches_114.jsonl", output_jsonl = "Data/relevant_speeches_114_sentences.jsonl")

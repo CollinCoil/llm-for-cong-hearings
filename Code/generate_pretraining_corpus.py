@@ -1,5 +1,5 @@
 """
-The goal is to generate a pre-training corporus and output a txt file that will be used in pretrain_model.py for extended pre-training
+This code generates a pre-training corporus and output a txt file that will be used in pretrain_model.py for extended pre-training
 of the sentence transformers model. 
 """
 import json
@@ -44,3 +44,8 @@ def generate_pretraining_corpus(data_path:str):
   with open("abstracts.txt", "w", encoding="utf-8") as f:
     np.savetxt(f, abstract_array, delimiter="\t", fmt="%s")  # Save as text file
 
+
+
+# Example Usage: 
+data_path = r"path\to\pretraining\data"
+generate_pretraining_corpus(data_path)

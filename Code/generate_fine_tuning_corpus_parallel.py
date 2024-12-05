@@ -118,6 +118,7 @@ def generate_finetuning_corpus(directory_path: str, output_path: str = "output.j
         np.savetxt(f, triplets, delimiter="|", fmt="%s", encoding="utf-8")
 
 
-
-
-generate_finetuning_corpus(directory_path = r'path\to\finetuning\directory', output_path = r'output\file\name', corpus_size = 500000)
+# Example Usage
+# directory_path = r'path\to\finetuning\directory'
+# output_path = r'output\file\name'
+# generate_finetuning_corpus(directory_path, output_path, corpus_size = 500000)

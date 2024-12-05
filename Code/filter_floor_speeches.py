@@ -63,9 +63,9 @@ def save_speeches(speeches, congress: str, output_file_name: str):
     merged_speeches_descr.to_json(output_file_name, orient = "records", lines=True)
 
 
-congresses = ["110", "111", "112", "113", "114"]
-
-for term in congresses: 
-    cong_speeches = filter_speeches(term)
-    output_file_name = "Data/relevant_speeches_%s.jsonl" % term
-    save_speeches(cong_speeches, term, output_file_name)
+# Example Usage: 
+# congresses = ["110", "111", "112", "113", "114"]
+# for term in congresses: 
+#     cong_speeches = filter_speeches(term)
+#     output_file_name = "Data/relevant_speeches_%s.jsonl" % term
+#     save_speeches(cong_speeches, term, output_file_name)

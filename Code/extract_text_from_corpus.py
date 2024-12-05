@@ -69,6 +69,7 @@ def extract_from_files_in_directory(directory: str):
       output_name = re.sub(".pdf", ".txt", filename)
       text_extraction(filename, output_file_name = output_name)
 
-
-extract_from_files_in_directory("Data/Agencies")
+# Example Usage
+# directory = r"path\to\directory"
+# extract_from_files_in_directory(directory)
       

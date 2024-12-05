@@ -8,7 +8,7 @@ import requests
 import json
 
 
-def query_s2orc():
+def query_s2orc(output_file_name: str):
     """
     This function calls the S2ORC API to request papers associated with a query. Articles containing any of the queries are returned. About 90,000 articles are returned using the below query. 
     The queried papers are then saved as a json lines file. 
@@ -25,7 +25,7 @@ def query_s2orc():
     retrieved = 0
     
     # Save articles in a json lines file
-    with open(f"Data/papers.jsonl", "a", encoding='utf-8') as file:
+    with open(output_file_name, "a", encoding='utf-8') as file:
         while True:
             if "data" in r:
                 retrieved += len(r["data"])
@@ -38,4 +38,7 @@ def query_s2orc():
     
     print(f"Done! Retrieved {retrieved} papers total")
 
-query_s2orc()
+
+# Example Usage
+# output_file_name = "path\to\output"
+# query_s2orc(output_file_name)

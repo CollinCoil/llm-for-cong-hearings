@@ -65,13 +65,14 @@ def calculate_similarity_by_top_n(first_embeddings_path, first_corpus_jsonl,
                     'similarity': float(similarities[index].item())
                 }, ensure_ascii=False) + '\n')
 
-calculate_similarity_by_top_n(
-    r"Data\Zenodo\wc_embeddings.npy",
-    r"Data\Zenodo\witness_corpus.jsonl",
-    r"Data\Zenodo\lhic_embeddings.npy",
-    r"Data\Zenodo\legislative_history_impact_corpus.jsonl",
-    r"Data\Zenodo\sentence_similarities_by_top_n.jsonl"
-)
+# Example Usage
+# calculate_similarity_by_top_n(
+#     r"path\to\embeddings_1",
+#     r"path\to\jsonl_1",
+#     r"path\to\embeddings_2",
+#     r"path\to\jsonl_2",
+#     r"path\to\output"
+# )
 
 
 def calculate_similarity_by_threshold(first_embeddings_path, first_corpus_jsonl,
@@ -156,12 +157,15 @@ def calculate_similarity_by_threshold(first_embeddings_path, first_corpus_jsonl,
         for item in buffer:
             f.write(json.dumps(item, ensure_ascii=False) + '\n')
 
-calculate_similarity_by_threshold(
-    r"Data\Zenodo\wc_embeddings.npy",
-    r"Data\Zenodo\witness_corpus.jsonl",
-    r"Data\Zenodo\lhic_embeddings.npy",
-    r"Data\Zenodo\legislative_history_impact_corpus.jsonl",
-    r"Data\Zenodo\sentence_similarities_by_threshold.jsonl",
-    0.75,
-    1000
-)
+
+# similarity_threshold = 0.75
+# batch_size = 1000
+# calculate_similarity_by_threshold(
+#     r"path\to\embeddings_1",
+#     r"path\to\jsonl_1",
+#     r"path\to\embeddings_2",
+#     r"path\to\jsonl_2",
+#     r"path\to\output",
+#     similarity_threshold,
+#     batch_size
+# )

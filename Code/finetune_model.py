@@ -30,7 +30,7 @@ def read_triplet_data(file_path):
 
 
 
-def fine_tune_model(model_path: str, data_path: str):
+def fine_tune_model(base_model_path: str, data_path: str, output_model_path: str):
     """
     This takes a pretrained sentence transformer model and a fine-tuning dataset to fine tune the model. It uses the triplet loss function, so training data must be set up as 
     (anchor sentence, similar sentence, dissimilar sentence). Once the model is fine tuned, it is saved. 
@@ -48,7 +48,7 @@ def fine_tune_model(model_path: str, data_path: str):
         print("GPU is not available. Training on CPU.")
 
     # Load the pre-trained model and move it to the GPU
-    model = SentenceTransformer(model_path).to(device)
+    model = SentenceTransformer(base_model_path).to(device)
 
     # Load the fine-tuning data
     data = read_triplet_data(data_path)
@@ -72,11 +72,15 @@ def fine_tune_model(model_path: str, data_path: str):
               scheduler="warmuplinear",
               optimizer_params={"lr": 5e-5},
               show_progress_bar=True,
-              output_path="Models/finetuned_model")
+              output_path=output_model_path)
 
     # Save the fine-tuned model
-    model.save('Models/finetuned_model')
+    model.save(output_model_path)
 
 
+# Example Usage
 if __name__ == '__main__':
-    fine_tune_model(model_path="Models/pretrained_roberta", data_path="Data/finetuning_text.txt")
+    base_model_path = r"path\to\model"
+    data_path = r"path\to\data"
+    output_model_path = r"Models\finetuned_model"
+    fine_tune_model(base_model_path, data_path, output_model_path)

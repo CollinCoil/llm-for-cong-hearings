@@ -25,13 +25,9 @@ def preprocess_image(image):
     Returns:
         The preprocessed image.
     """
-    # Convert the image to grayscale
-    # image = image.convert("L")
-
     # Enhance the contrast of the image
     enhancer = ImageEnhance.Contrast(image)
     image = enhancer.enhance(1.25)
-
 
     return image
 
@@ -46,14 +42,13 @@ def postprocess_text(text):
         The postprocessed text.
     """
     # Remove leading apostrophes
-    text = re.sub(r"^‘", "", text, flags=re.MULTILINE) # These are commonly added by the program erroneously 
-
+    text = re.sub(r"^‘", "", text, flags=re.MULTILINE)  # These are commonly added by the program erroneously 
 
     return text
 
 def extract_text_from_pdf(pdf_file: str, output_text_file: str):
     """
-    This code extracts text from PDF documents that have not have had OCR performed.
+    This code extracts text from PDF documents that have not had OCR performed.
 
     Args:
         pdf_file: The path to the PDF file.
@@ -69,7 +64,7 @@ def extract_text_from_pdf(pdf_file: str, output_text_file: str):
             page = doc.load_page(page_number)
 
             # Render the page as a Pixmap object
-            pix = page.get_pixmap(dpi = 900)
+            pix = page.get_pixmap(dpi=900)
 
             # Convert the Pixmap object to a PIL image
             image = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
@@ -86,21 +81,30 @@ def extract_text_from_pdf(pdf_file: str, output_text_file: str):
             # Write the extracted text to the output file
             txt_file.write(extracted_text + "\n")
 
-# Directory containing the PDF files
-pdf_directory = r"path_to_directory"
+def process_pdf_directory(pdf_directory: str):
+    """
+    Processes all PDF files in the specified directory to extract text using OCR.
+    
+    Args:
+        pdf_directory: The path to the directory containing the PDF files.
+    """
+    # List to store the futures
+    futures = []
 
-# List to store the futures
-futures = []
+    # Create a ThreadPoolExecutor
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        # Loop through each file in the directory
+        for filename in os.listdir(pdf_directory):
+            if filename.endswith(".pdf"):
+                pdf_file = os.path.join(pdf_directory, filename)
+                output_text_file = os.path.splitext(pdf_file)[0] + ".txt"
+                future = executor.submit(extract_text_from_pdf, pdf_file, output_text_file)
+                futures.append(future)
 
-# Create a ThreadPoolExecutor
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    # Loop through each file in the directory
-    for filename in os.listdir(pdf_directory):
-        if filename.endswith(".pdf"):
-            pdf_file = os.path.join(pdf_directory, filename)
-            output_text_file = os.path.splitext(pdf_file)[0] + ".txt"
-            future = executor.submit(extract_text_from_pdf, pdf_file, output_text_file)
-            futures.append(future)
+    # Wait for all futures to complete
+    concurrent.futures.wait(futures)
+    print(f"Processed all PDFs in {pdf_directory}")
 
-# Wait for all futures to complete
-concurrent.futures.wait(futures)
+# Example usage:
+# pdf_directory = r"path\to\directory"
+# process_pdf_directory(pdf_directory)

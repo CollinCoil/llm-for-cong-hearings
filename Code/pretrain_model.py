@@ -12,7 +12,7 @@ import numpy as np
 # The following code continues pretraining of a pretrained model with TSDAE, 
 # See https://www.sbert.net/examples/unsupervised_learning/TSDAE/README.html
 
-def pretrain_model(model: str, data):
+def pretrain_model(model: str, data, output_path: str):
     """
     This takes a pretrained sentence transformer model and a pretraining dataset to extend pretraining of the model. This is done to further expose the model to 
     the unqiue vocabulary in the primary data set. In our project, we use abstracts on articles about Congress and the Affordable Care Act to increase the model's awareness
@@ -45,14 +45,15 @@ def pretrain_model(model: str, data):
         output_path="pretrained_roberta"
     )
 
-    model.save("Models/pretrained_roberta")
+    model.save(output_path)
 
 
 
 
-
-with open("Data/abstracts.txt", 'r', encoding='utf-8') as file:
-        data = file.readlines()
-        pretraining_data = [line.strip() for line in data]
-model = SentenceTransformer("all-distilroberta-v1")
-pretrain_model(model, pretraining_data)
+# Example Usage
+# with open("Data/abstracts.txt", 'r', encoding='utf-8') as file:
+#         data = file.readlines()
+#         pretraining_data = [line.strip() for line in data]
+# model = SentenceTransformer("all-distilroberta-v1")
+# output_path = "Models/pretrained_roberta"
+# pretrain_model(model, pretraining_data, output_path)

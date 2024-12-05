@@ -49,5 +49,8 @@ def generate_embeddings(model:str, corpus_file:str, output_file:str):
     # Save the embeddings as a numpy array
     np.save(output_file, embeddings)
 
-
-generate_embeddings(model = r'path/to/model', corpus_file = r'path/to/corpus', output_file = r'output/file/name')
+# Example Usage
+# model = r'path/to/model'
+# corpus_file = r'path/to/corpus'
+# output_file = r'output/file/name'
+# generate_embeddings(model, corpus_file, output_file)

@@ -80,7 +80,7 @@ def clean_txt_files_in_parallel(directory: str) -> None:
         executor.map(clean_text_file, txt_files)
 
 # Example usage
-directory_path = r'/path/to/your/directory'
+# directory_path = r'/path/to/directory'
 # clean_txt_files_in_parallel(directory_path)
 
 
@@ -123,8 +123,8 @@ def clean_and_reindex_jsonl(input_file: str, output_file: str, filter_words: lis
             outfile.write(json.dumps(entry) + '\n')
 
 # Example usage
-filter_words = ["thank", "time", "discussion", "opportunity", "chair"]
-min_word_count = 8
-clean_and_reindex_jsonl(r'input\jsonl\path', r'output\jsonl\path', filter_words, min_word_count)
+# filter_words = ["thank", "time", "discussion", "opportunity", "chair"]
+# min_word_count = 8
+# clean_and_reindex_jsonl(r'input\jsonl\path', r'output\jsonl\path', filter_words, min_word_count)
 
 
