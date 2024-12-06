@@ -27,7 +27,7 @@ This command will install all the required packages listed in the requirements.t
 We recommend creating a python notebook and importing the necessary functions from across the repository. That will prevent the need to toggle in between individual files when executing code. 
 
 # Data
-The data for this project is accessible on Zenodo. The link will be published here once it is available. 
+The data for this project is accessible on Zenodo. It can be accessed here: [https://doi.org/10.5281/zenodo.14291000](https://doi.org/10.5281/zenodo.14291000)
 
 # Paper and Citation
 If you use this code, please use the following citation: 
