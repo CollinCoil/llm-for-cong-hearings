@@ -14,7 +14,7 @@ setup(
     description='This repository contains code, pretrained models, and explanations for how to use large language models and a variety of other natural language processing techniques to analyze congressional hearings.',
     author='Collin Coil',
     author_email='collin.a.coil@gmail.com',
-    url='https://github.com/yourusername/your-repo',
+    url='https://github.com/CollinCoil/llm-for-cong-hearings',
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
