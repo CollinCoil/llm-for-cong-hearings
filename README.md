@@ -33,11 +33,14 @@ The data for this project is accessible on Zenodo. It can be accessed here: [htt
 If you use this code, please use the following citation: 
 
 ```
-@article{Coil2024Congressional,
-  title={Congressional Witnesses Matter: Proving Witness Testimony Impact Using Large Language Models},
-  author={Coil, Collin and Brucker, Caroline and Chen, Nicholas and Keith, Elizabeth and O'Connor, Karen},
-  journal={Unpublished manuscript},
-  year={2024}
+@misc{coil_bruckner_chen_keith_o'connor_2024,
+ title={Congressional Witnesses Matter: Proving Witness Testimony Impact Using Large Language Models},
+ url={osf.io/preprints/socarxiv/zhyjv},
+ DOI={10.31235/osf.io/zhyjv},
+ publisher={SocArXiv},
+ author={Coil, Collin A and Bruckner, Caroline and Chen, Nicholas and Keith, Elizabeth and O'Connor, Karen},
+ year={2024},
+ month={Dec}
 }
 ```
-A link to the paper will be published here once it is available. 
+The paper is accessible here: [https://doi.org/10.31235/osf.io/zhyjv](https://doi.org/10.31235/osf.io/zhyjv). A link to the final publication will be added once the paper is published. 
