@@ -1,6 +1,6 @@
 sentence-transformers==3.1.1
 transformers==4.39.2
-tokenizers==1.15.2
+tokenizers==0.15.2
 numpy==1.26.4
 pandas==2.2.2
 pypdf2==3.0.1
