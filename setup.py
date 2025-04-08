@@ -20,5 +20,5 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
     ],
-    python_requires='==3.12',  # While other versions of python may work, this was originally developed with 3.12.1, and all specified dependencies work with python==3.12.1
+    python_requires='==3.12.1',  # While other versions of python may work, this was originally developed with 3.12.1, and all specified dependencies work with python==3.12.1
 )
